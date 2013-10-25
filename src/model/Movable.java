@@ -80,22 +80,27 @@ public abstract class Movable extends Collidable{
 
 	public void reflect(Vector vector) {
 		
-		//System.out.println("vector="+this.trajectory);
 		Matrix toBase= Matrix.createOrthonormal(vector);
 		
-		//System.out.println("tobase: \n"+toBase);
-		/*//**/
 		Matrix fromBase=toBase.invert();
-		//System.out.println(fromBase);
+		
 		Vector temp =toBase.apply(trajectory);
-		
-		//System.out.println("base vector="+temp);
-		
-		//System.out.println("frombase: \n"+fromBase);
 		temp= new Vector(-temp.getElement(0),temp.getElement(1));
 		
-		//System.out.println(temp);
-		trajectory=fromBase.apply(temp);
+		
+		
+		temp=fromBase.apply(temp);
+		
+		if(temp.getLength()>this.trajectory.getLength()){
+			temp=temp.scale(trajectory.getLength()/temp.getLength());
+		}else if(temp.getLength()<this.trajectory.getLength()){
+			temp=temp.scale(temp.getLength()/trajectory.getLength());
+		}
+		
+		if(Math.abs(temp.getLength()-this.trajectory.getLength())>.00000001){
+			System.out.println(temp.getLength()+":"+(temp.getLength()-trajectory.getLength()));
+		}
+		trajectory=temp;
 		//System.out.println("vector="+this.trajectory);
 		//System.exit(0);
 		
@@ -103,8 +108,8 @@ public abstract class Movable extends Collidable{
 
 	public void bounce(Movable m) {
 		
-		Vector cmVel=trajectory.scale(mass).add(m.trajectory.scale(mass)).scale(1/(this.mass+m.mass));
-		System.out.println(cmVel);
+		Vector cmVel=trajectory.scale(mass).add(m.trajectory.scale(m.mass)).scale(1/(this.mass+m.mass));
+		//System.out.println(cmVel);
 		if(this instanceof Sphere){
 			Sphere s1=(Sphere)this;
 			if(m instanceof Sphere){
@@ -112,6 +117,7 @@ public abstract class Movable extends Collidable{
 				Vector normal =s1.getPos().subtract(s2.getPos());
 				this.trajectory=this.trajectory.subtract(cmVel);
 				m.trajectory=m.trajectory.subtract(cmVel);
+				
 				this.reflect(normal);
 				m.reflect(normal);
 				this.trajectory=this.trajectory.add(cmVel);
@@ -121,6 +127,10 @@ public abstract class Movable extends Collidable{
 			}
 			
 		}
+		Vector cmVel2=trajectory.scale(mass).add(m.trajectory.scale(m.mass)).scale(1/(this.mass+m.mass));
+		if(Math.abs(cmVel.getLength()-cmVel2.getLength())>.01){
+			System.out.println(cmVel.getLength()-cmVel2.getLength());
+		}/**/
 		// TODO Auto-generated method stub
 		
 	}

@@ -27,7 +27,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 		
 		t.scheduleAtFixedRate(new TimerTask(){
 			public void run() {procTimer();}
-		}, 20, 10);
+		}, 10000, 20);
 	}
 	
 	
@@ -37,7 +37,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 			//model.advance(20/1000.0);
 		}else{
 			long thisTime=System.currentTimeMillis();
-			model.advance((thisTime-lastTime)/1000.0*3);
+			model.advance((thisTime-lastTime)/1000.0);
 			lastTime=thisTime;
 		}
 		//model.advance();

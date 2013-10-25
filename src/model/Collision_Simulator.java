@@ -39,16 +39,19 @@ public class Collision_Simulator {
 			public int getY() {return 0;}
 		});
 		Random rand=new Random();
-		for(int i=0;i<10;i++){
-			Sphere s=new Sphere(rand.nextInt(600)+50,rand.nextInt(400)+50,new Vector(rand.nextInt(400)-200,rand.nextInt(400)-200),rand.nextInt(50)+50);
+		for(int i=0;i<100;i++){
+			Sphere s=new Sphere(rand.nextInt(750),rand.nextInt(550),new Vector(0,0/*rand.nextInt(800)-400,rand.nextInt(800)-400/**/),rand.nextInt(50)+50);
 			rendered.add(s);
 			movable.add(s);
 		}/**/
 		
-		Sphere s=new Sphere(100,100,new Vector(100,0),100);
+		Sphere s=new Sphere(100,100,new Vector(2500,2500),500);
 		rendered.add(s);
 		movable.add(s);
-		s=new Sphere(600,100,new Vector(00,0),100);
+		/*s=new Sphere(600,100,new Vector(0,0),1000);
+		rendered.add(s);
+		movable.add(s);
+		s=new Sphere(400,200,new Vector(00,00),10000);
 		rendered.add(s);
 		movable.add(s);/**/
 		
