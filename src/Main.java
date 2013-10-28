@@ -1,56 +1,71 @@
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Scanner;
 
 import controller.Collision_Controller;
+import model.Collidable;
+import model.CollisionList;
 import model.Collision_Simulator;
+import model.Sphere;
 public class Main {
 	public static void main(String args[]){
-		/*System.out.println(evenDigits(8342116));
-		System.out.println(evenDigits(-34512));
-		System.out.println(evenDigits(-31515));
-		System.out.println(evenDigits(212));
-		System.out.println(evenDigits(2112));
-		System.out.println(evenDigits(21212));//3
-		System.out.println(evenDigits(1212));
-		System.out.println(evenDigits(2121));
-		System.out.println(evenDigits(12121));
-		/*smartmap.
-		for(int i=1;i<=10;i++){
-			//System.out.println(smartString(i));
-		}
-		for(int i=1;i<=10;i++){
-			//System.out.println(starString2(i));
-		}
-		Random rand =new Random();
+		
+
 		
 		
-		int length=9000;
-		int iterations=10000;
-		System.out.println("testing from 0 to "+length+" stars");
-		for(int j=0;j<10&&false;j++){
 		
-		long time1=System.currentTimeMillis();
-		for(int i=1;i<=iterations;i++){
-			starString(rand.nextInt(length));
-		}
-		long time2=System.currentTimeMillis();
-		for(int i=1;i<=iterations;i++){
-			smartString(rand.nextInt(length));
-		}
-		long time3=System.currentTimeMillis();
-		System.out.println();
-		System.out.println("recursive logic:"+((time2-time1)));
-		//System.out.println("iterative recursion:"+((time3-time2)));
-		System.out.println("smart recursive logic:"+((time3-time2)));
-		}
 		
-		*/
-		//System.out.println("initializing collision simulator");
+		
+		
+		
+		/*Random rand =new Random();
+		
+		//int[]testCases={100,200,400,800,1600,3200,6400,6400+3200,12800,12800+6400,25600,25600+12800,51200,51200+25600,102400};
+
+		int[]testCases=new int[1500];
+		for(int i=0;i<testCases.length;i++){
+			testCases[i]=rand.nextInt(300);
+			//System.out.println(testCases[i]);
+		}
+		System.out.println("------------------------------");
+		int number=2000;
+		int derp=0;
+		for(int testRange=0;testRange<number;testRange++){
+			
+			
+			int total=0;
+			for(int i=0;i<1;i++){
+				ArrayList<Sphere> list=new ArrayList<Sphere>();
+				
+				for(int j=0;j<300;j++){
+					Sphere s=new Sphere(rand.nextInt(800),rand.nextInt(600),null,1);
+					list.add(s);
+				}
+				
+				
+				
+			long time1=System.currentTimeMillis();
+			
+			CollisionList c=new CollisionList(800,600,300);
+			
+			for(Collidable cc:list){
+				c.add(cc);
+			}
+			long time2=System.currentTimeMillis();
+			total+=time2-time1;
+			}
+			derp+=total;
+			if(testRange%1000==0){
+				System.out.println(testRange);
+			}
+			//System.out.println(total);
+		}
+	System.out.println(derp/(double)number);	
+		/**/
 		Collision_Controller Application=new Collision_Controller();
 	}
-	
-	
 	
 	
 	public static int evenDigits(int n){

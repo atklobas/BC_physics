@@ -125,7 +125,7 @@ public class Matrix {
 	public Matrix invert(){
 		if(columns!=rows){
 			throw new UnsupportedOperationException("inverse of a "+columns+"by"+rows+"matrix is not defined");
-		}else if(this.isOrthogonal){
+		}else if(this.isOrthogonal||true){
 			return this.transpose();
 		}/**/else if (columns==2){
 			double a=matrix[1][1];

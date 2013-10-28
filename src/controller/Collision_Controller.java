@@ -14,30 +14,44 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 	Collision_Simulator model;
 	int width, height;
 	long lastTime=0;
+	public TimerTask gameloop;
+	private long timerCounter=0;
 	public Collision_Controller(){
-		width=800;
-		height=600;
-		Timer t=new Timer();
-		view = new Collision_View(800,600);
-		model = new Collision_Simulator(800,600,view);
+		width=1000;
+		height=700;
+		t=new Timer();
+		view = new Collision_View(width,height, this);
+		model = new Collision_Simulator(width,height,view);
+		
+		
 		
 		view.addMouseListener(this);
 		view.addMouseMotionListener(this);
-		
-		
-		t.scheduleAtFixedRate(new TimerTask(){
+		gameloop=new TimerTask(){
 			public void run() {procTimer();}
-		}, 10000, 20);
+		};
+		
+		
+		
 	}
 	
 	
 	public void procTimer(){
+		timerCounter++;
+		if(timerCounter%(2*3)==0){
+			for(int i=0;i<1;i++){
+			//model.addShpere();
+			}
+			
+			//System.out.println(timerCounter*10+"balls");
+		}
+		
 		if(lastTime==0){
 			lastTime=System.currentTimeMillis();
 			//model.advance(20/1000.0);
 		}else{
 			long thisTime=System.currentTimeMillis();
-			model.advance((thisTime-lastTime)/1000.0);
+			model.advance((/**/20/*/Math.min(thisTime-lastTime,100)/**/)/1000.0);
 			lastTime=thisTime;
 		}
 		//model.advance();
@@ -92,5 +106,13 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 		//System.out.println("mouse moved");
 		
 	}
+
+
+	public void startTimer() {
+		model.advance(0.0);
+		t.scheduleAtFixedRate(gameloop, 500, 20);
+		
+	}
+	
 
 }

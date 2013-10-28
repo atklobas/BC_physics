@@ -15,14 +15,16 @@ public class Collision_View {
 	JFrame f;
 	Drawing_Panel panel;
 	int width=800,height=600;
+	Collision_Controller controller=null;
 	public Collision_View(){
-		this(800,600);
+		this(800,600,null);
 	}
 
 
-    public Collision_View(int width, int height) {
+    public Collision_View(int width, int height, Collision_Controller c) {
 		this.width=width;
 		this.height=height;
+		controller=c;
 		SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI(); 
@@ -41,6 +43,9 @@ public class Collision_View {
         f.add(panel);
         f.pack();
         f.setVisible(true);
+        if(this.controller!=null){
+        	controller.startTimer();
+        }
     } 
 
 	

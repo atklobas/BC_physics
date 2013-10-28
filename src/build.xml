@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<!-- Configuration of the Ant build system to generate a Jar file --> 
+
+
+	
+<project name="TestMain" default="makejar" basedir="..">
+  <target name ="makejar" description="Create a jar for the HW project">
+    <jar jarfile="Test.jar" includes="*.class" basedir="bin"/>
+  </target>
+</project>
+	
+	
