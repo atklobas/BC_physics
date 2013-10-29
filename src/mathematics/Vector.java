@@ -42,6 +42,7 @@ public class Vector {
 	}
 	
 	public Vector scale(double s){
+
 		Vector ret=new Vector(this.vector);
 		for(int i=vector.length-1;i>=0;i--){
 			ret.vector[i]*=s;

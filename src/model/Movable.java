@@ -7,6 +7,7 @@ public abstract class Movable extends Collidable{
 	private double mass, elacticity, charge;
 	private Vector pos,lastpos,trajectory;
 	private Movable LastCollidedWith=null;
+	private double COR=1;
 	//private int lastCollided=2;
 	
 	public Movable(double x, double y, Vector trajectory,double mass){
@@ -89,9 +90,8 @@ public abstract class Movable extends Collidable{
 		Matrix toBase= Matrix.createOrthonormal(vector);
 		Matrix fromBase=toBase.invert();
 		Vector temp =toBase.apply(trajectory);
-		temp= new Vector(-Math.abs(temp.getElement(0)),temp.getElement(1));
+		temp= new Vector(-Math.abs(temp.getElement(0))*COR,temp.getElement(1));
 		this.setTrajectory(fromBase.apply(temp));
-		//this.advance(.02);
 	}
 	public void bounceX(Movable m){
 		
@@ -101,7 +101,7 @@ public abstract class Movable extends Collidable{
 		x1-=cm;
 		x2-=cm;
 		x1=Math.abs(x1);
-		x2=-Math.abs(x2);
+		x2=-Math.abs(x2)*this.COR*m.COR;
 		x1+=cm;
 		x2+=cm;
 		this.setTrajectory(new Vector(x1,trajectory.getElement(1)));
@@ -116,6 +116,13 @@ public abstract class Movable extends Collidable{
 	
 	public Vector getMomentum(){
 		return this.trajectory.scale(this.mass);
+	}
+
+
+	public void setCOR(double cor) {
+		this.COR=cor;
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

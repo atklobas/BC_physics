@@ -11,11 +11,14 @@ public class Sphere extends Movable implements Renderable{
 	private double radius;
 	private BufferedImage image;
 	private int width,height;
-	public static int number;
+	public static int number=0;
+	private int thisnum;
 	int dimention;
 	
 	public Sphere(double x, double y, Vector trajectory,double mass){
+		
 		super(x,y,trajectory,mass);
+		thisnum=number++;
 		this.radius=Math.sqrt(mass);
 		dimention=(int)(radius*2);
 		width=dimention;
@@ -28,8 +31,11 @@ public class Sphere extends Movable implements Renderable{
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 		g.setColor(new Color(255,255,255,0));
 		g.fillRect(0, 0, width, height);
-		
+		if(thisnum==99999){
 		g.setColor(Color.RED);
+		}else{
+			g.setColor(Color.WHITE);
+		}
 		
 		g.fillOval(0, 0, dimention, dimention);
 		g.setColor(Color.CYAN);
@@ -39,7 +45,6 @@ public class Sphere extends Movable implements Renderable{
 	}
 	@Override
 	public int getBoundingHeight() {
-		// TODO Auto-generated method stub
 		return dimention;
 	}
 	@Override
@@ -51,7 +56,7 @@ public class Sphere extends Movable implements Renderable{
 		return radius;
 	}
 	public void setMass(double m){
-		if(m>1000)return;
+		if(m>10000)return;
 		super.setMass(m);
 		radius=Math.sqrt(m);
 		dimention=(int)radius*2;
@@ -76,8 +81,53 @@ public class Sphere extends Movable implements Renderable{
 	@Override
 	public void bounce(Movable m) {
 		if(m instanceof Sphere){
+			
+			
+			
 			Sphere sphere=(Sphere)m;
+			//Vector normal =this.getPos().add(new Vector(radius,radius)).subtract(sphere.getPos().add(new Vector(sphere.radius,sphere.radius)));
 			Vector normal =this.getPos().add(new Vector(radius,radius)).subtract(sphere.getPos().add(new Vector(sphere.radius,sphere.radius)));
+			
+			double depth=normal.getLength();
+			double neededLength=this.radius+sphere.radius;
+			
+			//a b c make a triangle, when c==neededLength, the balls have just collided
+			double c=sphere.getTrajectory().distance(this.getTrajectory());
+			double a=sphere.getTrajectory().getLength();
+			double b=this.getTrajectory().getLength();
+			//
+			double time=(neededLength-depth)/c;
+			
+			sphere.advance(-time);
+			this.advance(-time);
+			normal=this.getPos().add(new Vector(radius,radius)).subtract(sphere.getPos().add(new Vector(sphere.radius,sphere.radius)));
+			
+			
+			//double time=neededLength/(depth*v1);
+			//System.out.println(neededLength/(depth)+","+(neededLength/(depth)));
+			
+			/*System.out.println("needed "+neededLength+", depth "+depth);
+			System.out.println();
+			System.out.println(sphere.getTrajectory().scale(neededLength/depth));
+			System.out.println(sphere.getPos());
+			System.out.println(sphere.getPos().subtract(sphere.getTrajectory().getUnitVector().scale(neededLength/depth)));
+			System.out.println();
+			System.out.println(this.getTrajectory().scale(neededLength/depth));
+			System.out.println(this.getPos());
+			System.out.println(this.getPos().subtract(this.getTrajectory().getUnitVector().scale(neededLength/depth)));
+			
+			/**/
+			
+			/*if(v1!=0){
+				sphere.setPos(sphere.getPos().add(sphere.getTrajectory().scale(neededLength/(depth*v1))));
+			}
+				
+			if(v2!=0){
+				this.setPos(this.getPos().add(this.getTrajectory().scale(neededLength/depth*v2)));
+			}*/
+
+			/**/
+			
 			if(normal.getLength()==0){
 				return;
 			}
@@ -89,6 +139,8 @@ public class Sphere extends Movable implements Renderable{
 			this.setTrajectory(fromBase.apply(getTrajectory()));
 			m.setTrajectory(fromBase.apply(m.getTrajectory()));
 			
+			sphere.advance(time);
+			this.advance(time);
 			
 			
 		}else if(m instanceof Box){

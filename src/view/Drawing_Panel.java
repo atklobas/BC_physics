@@ -69,8 +69,8 @@ int objectsRendered=0;
         g.drawImage(image[currentImage%imageLength], 0, 0, null);
         //if(lastTime!=time){
         Date d=new Date(time);
-        String toDisplay=d+" ("+Math.round(1/(((time-lastTime)/frameAverage)/10000))/10.+" fps) objects rendered="+this.objectsRendered;
-	        g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,15));
+        String toDisplay=d+" ("+Math.round(1/(((time-lastTime)/frameAverage)/10000))/10.+" fps) objects rendered="+this.objectsRendered;   
+        g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,15));
 	        
 	        g.setColor(Color.black);
 	        g.fillRect(5, 5, (int)(toDisplay.length()*9)+10, 20);

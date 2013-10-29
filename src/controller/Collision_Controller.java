@@ -16,9 +16,15 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 	long lastTime=0;
 	public TimerTask gameloop;
 	private long timerCounter=0;
+	Thread looper;
 	public Collision_Controller(){
+		/**/
 		width=1000;
-		height=700;
+		height=60;
+		/*/
+		width=1000;
+		height=800;
+		/**/
 		t=new Timer();
 		view = new Collision_View(width,height, this);
 		model = new Collision_Simulator(width,height,view);
@@ -27,6 +33,15 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 		
 		view.addMouseListener(this);
 		view.addMouseMotionListener(this);
+		
+		looper=new Thread(new Runnable(){
+			public void run() {
+				gameLoop();
+			}
+			
+		});
+		looper.start();
+		
 		gameloop=new TimerTask(){
 			public void run() {procTimer();}
 		};
@@ -35,27 +50,29 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 		
 	}
 	
-	
-	public void procTimer(){
-		timerCounter++;
-		if(timerCounter%(2*3)==0){
-			for(int i=0;i<1;i++){
-			//model.addShpere();
+	public void gameLoop(){
+		
+		while(true){
+			/*try {
+				Thread.sleep(Long.MAX_VALUE);
+			} catch (InterruptedException e) {
+				
+			}/**/
+			if(lastTime==0){
+				lastTime=System.currentTimeMillis();
+			}else{
+				long thisTime=System.currentTimeMillis();
+				model.advance((/**/20/*/Math.min(thisTime-lastTime,100)/**/)/1000.0);
+				lastTime=thisTime;
 			}
 			
-			//System.out.println(timerCounter*10+"balls");
 		}
 		
-		if(lastTime==0){
-			lastTime=System.currentTimeMillis();
-			//model.advance(20/1000.0);
-		}else{
-			long thisTime=System.currentTimeMillis();
-			model.advance((/**/20/*/Math.min(thisTime-lastTime,100)/**/)/1000.0);
-			lastTime=thisTime;
-		}
-		//model.advance();
-		
+	}
+	
+	
+	public void procTimer(){
+		looper.interrupt();
 	}
 	
 

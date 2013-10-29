@@ -1,6 +1,8 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import mathematics.Vector;
 /**
@@ -25,6 +27,7 @@ public class CollisionList {
 	
 	
 	private int minX,minY,maxX,maxY;
+	private int midX,midY;
 	
 	
 	
@@ -68,15 +71,17 @@ public class CollisionList {
 	private void toSublists(){
 		int newWidth=(maxX-minX)/2;
 		int newHeight=(maxY-minY)/2;
-		if(newWidth<=800||true){
+		if(newWidth<=2||newHeight<=2){
 			return;//if everything is in the same spot, you'd get infinite recursion
 		}
+		midX=minX+newWidth;
+		midY=minY+newHeight;
 		
 		this.subLists=new CollisionList[4];
 		this.subLists[CENTER]=new CollisionList(minX,minX+newWidth,minY,minY+newHeight,maxContained, this);
-		this.subLists[SOUTH]=new CollisionList(minX,minX+newWidth,minY+newHeight,maxY+newHeight,maxContained, this);
+		this.subLists[SOUTH]=new CollisionList(minX,minX+newWidth,minY+newHeight,maxY,maxContained, this);
 		this.subLists[EAST]=new CollisionList(minX+newWidth,maxX,minY,minY+newHeight,maxContained, this);
-		this.subLists[SOUTH_EAST]=new CollisionList(minX+newWidth,maxX,minY+newHeight,maxY+newHeight,maxContained, this);
+		this.subLists[SOUTH_EAST]=new CollisionList(minX+newWidth,maxX,minY+newHeight,maxY,maxContained, this);
 		isBottom=false;
 		for(Collidable c: list){
 			add(c);
@@ -91,39 +96,51 @@ public class CollisionList {
 			if(list.size()>this.maxContained) toSublists();
 		}else{
 			
-			if(c.getX()>this.minX){//add to east/southeast
-				if(c.getY()>this.minY){
+			
+			
+			
+			
+			if(c.getX()>midX){//add to east/southeast
+				
+				if(c.getY()>midY){
+					
 					subLists[CollisionList.SOUTH_EAST].add(c);
 				}else{
 					subLists[CollisionList.EAST].add(c);
-					if(c.getY()+c.getBoundingWidth()>this.minY);{
-						subLists[CollisionList.SOUTH_EAST].add(c);
+					
+					if(c.getY()+c.getBoundingHeight()>midY){
+						
+						//subLists[CollisionList.SOUTH_EAST].add(c);
 					}
-				}
+				}/**/
+				
 			}else{
-				if(c.getX()+c.getBoundingWidth()>this.minX){//overlaps east&west
-					if(c.getY()>this.minY){
+				
+				if(c.getX()+c.getBoundingWidth()>midX){//overlaps east&west
+					
+					if(c.getY()>midY){
 						subLists[CollisionList.SOUTH_EAST].add(c);
 						subLists[CollisionList.SOUTH].add(c);
 					}else{
 						subLists[CollisionList.CENTER].add(c);
 						subLists[CollisionList.EAST].add(c);
-						if(c.getY()+c.getBoundingWidth()>this.minY);
-							subLists[CollisionList.SOUTH].add(c);{
+						if(c.getY()+c.getBoundingHeight()>midY){
+							subLists[CollisionList.SOUTH].add(c);
 							subLists[CollisionList.SOUTH_EAST].add(c);
 						}
 					}
 				}else{//only west
-					if(c.getY()>this.minY){
+					if(c.getY()>midY){
 						subLists[CollisionList.SOUTH].add(c);
 					}else{
 						subLists[CollisionList.CENTER].add(c);
-						if(c.getY()+c.getBoundingWidth()>this.minY);{
+						int test=(int)(c.getY()+c.getBoundingHeight());
+						if(test>midY){
 							subLists[CollisionList.SOUTH].add(c);
 						}
 					}
 				}
-				
+				/**/
 				
 			}
 			
@@ -160,8 +177,7 @@ public class CollisionList {
 		}
 		return false;
 	}
-	
-	public void CheckCollisions(){
+	public void checkCollisions(){
 		if(isBottom){
 			int length=list.size();
 			for(int i=0;i<length;i++){
@@ -171,9 +187,13 @@ public class CollisionList {
 					}
 				}
 			}
-			
+		}else{
+			for (CollisionList c: this.subLists){
+				c.checkCollisions();
+			}
 		}
 	}
+
 	
 	
 	
@@ -199,7 +219,7 @@ public class CollisionList {
 		}
 	}
 	
-	
+
 	
 	
 
