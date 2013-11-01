@@ -15,12 +15,14 @@ public class Sphere extends Movable implements Renderable{
 	private int thisnum;
 	int dimention;
 	
+	
 	public Sphere(double x, double y, Vector trajectory,double mass){
 		
 		super(x,y,trajectory,mass);
 		thisnum=number++;
 		this.radius=Math.sqrt(mass);
 		dimention=(int)(radius*2);
+		this.setPos(new Vector(x-radius,y-radius));
 		width=dimention;
 		height=dimention;
 		image = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
@@ -31,16 +33,22 @@ public class Sphere extends Movable implements Renderable{
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 		g.setColor(new Color(255,255,255,0));
 		g.fillRect(0, 0, width, height);
-		if(thisnum==99999){
-		g.setColor(Color.RED);
+		/*if(thisnum==number-1){
+			g.setColor(Color.RED);
 		}else{
-			g.setColor(Color.WHITE);
+			// (int)this.getMomentum()%255,1,1
+			int momenta=(int)this.getMomentum().getLength();
+			momenta/=8;
+			
+			g.setColor(new Color(0,momenta&255,(momenta*255/4500+150)&255));
+		}*/
+		g.setColor(Color.RED);
+		if(this.immovable){
+			g.setColor(Color.BLUE);
 		}
-		
 		g.fillOval(0, 0, dimention, dimention);
 		g.setColor(Color.CYAN);
 		g.drawString(""+((int)(this.getTrajectory().getLength())), 00,(int)radius+5);
-		
 		return image;
 	}
 	@Override

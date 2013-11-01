@@ -8,7 +8,12 @@ public abstract class Movable extends Collidable{
 	private Vector pos,lastpos,trajectory;
 	private Movable LastCollidedWith=null;
 	private double COR=1;
+	public boolean immovable=false;
 	//private int lastCollided=2;
+	public void setImmovable(boolean isImmovable){
+		immovable=isImmovable;
+		//mass=0xFFFFFFFF;
+	}
 	
 	public Movable(double x, double y, Vector trajectory,double mass){
 		this.pos=new Vector(x,y);
@@ -75,8 +80,15 @@ public abstract class Movable extends Collidable{
 	public Vector getTrajectory() {
 		return trajectory;
 	}
+	public double getVelX(){
+		return trajectory.getElement(0);
+	}
+	public double getVelY(){
+		return trajectory.getElement(1);
+	}
 	
 	public void setTrajectory(Vector trajectory) {
+		if(immovable)return;
 		if(trajectory.getLength()>50*(1000/20)){
 			this.trajectory=trajectory.scale(50*(1000/20)/trajectory.getLength());
 		}else{
@@ -84,8 +96,13 @@ public abstract class Movable extends Collidable{
 		}/**/
 		
 	}
+	public boolean isImovable(){
+		return immovable;
+		//return mass==0xFFFFFFFF;
+	}
 
 	public void reflect(Vector vector) {
+		//if(immovable)return;
 		LastCollidedWith=null;
 		Matrix toBase= Matrix.createOrthonormal(vector);
 		Matrix fromBase=toBase.invert();
@@ -95,18 +112,29 @@ public abstract class Movable extends Collidable{
 	}
 	public void bounceX(Movable m){
 		
+		if(immovable || m.immovable){
+			
+			double x1=this.trajectory.getElement(0);
+			double x2=m.trajectory.getElement(0);
+			if(!immovable)x1=Math.abs(x1);
+			if(!m.immovable)x2=-Math.abs(x2);
+			this.setTrajectory(new Vector(x1,trajectory.getElement(1)));
+			m.setTrajectory(new Vector(x2,m.trajectory.getElement(1)));
+			
+		}else{
+		
 		double x1=this.trajectory.getElement(0);
 		double x2=m.trajectory.getElement(0);
 		double cm=(x1*getMass() + x2*m.getMass())/(getMass()+m.getMass());
 		x1-=cm;
 		x2-=cm;
-		x1=Math.abs(x1);
-		x2=-Math.abs(x2)*this.COR*m.COR;
+		x1=Math.abs(x1)*(this.COR+m.COR)/2;
+		x2=-Math.abs(x2)*(this.COR+m.COR)/2;
 		x1+=cm;
 		x2+=cm;
 		this.setTrajectory(new Vector(x1,trajectory.getElement(1)));
 		m.setTrajectory(new Vector(x2,m.trajectory.getElement(1)));
-		
+		}
 		
 	}
 	
@@ -124,5 +152,13 @@ public abstract class Movable extends Collidable{
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void reflect(Vector vector, double time) {
+		advance(-time);
+		reflect(vector);
+		advance(time);
+		
+	}
+	
 	
 }

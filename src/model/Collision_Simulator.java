@@ -14,18 +14,42 @@ import view.Collision_View;
 import controller.Collision_Controller;
 
 public class Collision_Simulator {
-	int pixelsPerMeter=00;
-	private Vector gravity=new Vector(0,pixelsPerMeter*9.8);
+	int pixelsPerMeter=10;
+	private Vector gravity=new Vector(0,0);
 	Collision_View view;
 	int width,height;
-	ArrayList<view.Renderable> rendered = new ArrayList<view.Renderable>();
-	ArrayList<Movable> movable = new ArrayList<Movable>();
+	ArrayList<view.Renderable> rendered;
+	ArrayList<Movable> movable;
 	Random rand=new Random();
+	double COR=1;
 	
 	public Collision_Simulator(int width, int height, Collision_View view) {
 		this.width=width;
 		this.height=height;
 		this.view=view;
+		this.reset();
+	}
+	public void setGravity(double n){
+		gravity=new Vector(0,pixelsPerMeter*n);
+	}
+	public void placeSphere(int x, int y,boolean isImmovable){
+		Sphere s=new Sphere(x,y,new Vector(0,0),100);
+		s.setImmovable(isImmovable);
+		s.setCOR(COR);
+		rendered.add(s);
+		movable.add(s);
+	}
+	
+	
+	public void addShpere(){
+		this.addRandomCircles(1);
+	}
+	
+	public void reset(){
+		rendered = new ArrayList<view.Renderable>();
+		movable = new ArrayList<Movable>();
+		setCOR(1);
+		setGravity(0);
 		rendered.add(new view.Renderable(){
 			Image im;
 			public Image getImage() {
@@ -40,166 +64,71 @@ public class Collision_Simulator {
 			public int getImageX() {return 0;}
 			public int getImageY() {return 0;}
 		});
-		
-		Sphere s=new Sphere(100,0,new Vector(0,0),900);
+	}
+	public void addNewtonsCradle(){
+		Sphere s=new Sphere(50,100,new Vector(300,0),900);
+		s.setCOR(COR);
 		rendered.add(s);
 		movable.add(s);
-		for(int i=0;i<2500;i++){
-			s=new Sphere(rand.nextInt(100),rand.nextInt(height),new Vector(rand.nextInt(510),rand.nextInt(110)-55),2 );
+		
+		
+		for(int i=0;i<4;i++){
+			s=new Sphere(200+120*i,100,new Vector(0,0),900);
+			s.setCOR(COR);
 			rendered.add(s);
 			movable.add(s);
 		}
-		/**/
-		/*/
-		for(int i=0;i<100;i++){
-			Sphere s=new Sphere(rand.nextInt(width-100)+100,rand.nextInt(height),new Vector(rand.nextInt(40)-20,rand.nextInt(40)-20),rand.nextInt(100)+50 );
+	}
+	
+	public void addRandomCircles(int n){
+		for(int i=0;i<n;i++){
+			Sphere s=new Sphere(0,0,new Vector(rand.nextInt(200)-100,rand.nextInt(200)-100),rand.nextInt(200)+50 );
+			int width=s.getBoundingWidth();
+			int height=s.getBoundingHeight();
+			s.setPos(new Vector(rand.nextInt(this.width-width),rand.nextInt(this.height-height)));
+			s.setCOR(COR);
 			rendered.add(s);
 			movable.add(s);
 		}
-		
-		
-		/**/
-		
-		
-		/*s=new Sphere(150,150,new Vector(-55,-50),100);
-		rendered.add(s);
-		movable.add(s);
-		s=new Sphere(0,0,new Vector(55,50),100);
-		rendered.add(s);
-		movable.add(s);
-		s=new Sphere(0,150,new Vector(55,-50),100);
-		rendered.add(s);
-		movable.add(s);
-		
-		
-		
-		/*Sphere s=new Sphere(50,100,new Vector(300,5),900);
-		rendered.add(s);
-		movable.add(s);
-		s=new Sphere(200,100,new Vector(0,0),900);
-		rendered.add(s);
-		movable.add(s);
-		s=new Sphere(270,100,new Vector(0,0),400);
-		rendered.add(s);
-		movable.add(s);
-		s=new Sphere(340,100,new Vector(0,0),900);
-		rendered.add(s);
-		movable.add(s);
-		s=new Sphere(410,100,new Vector(0,0),900);
-		rendered.add(s);
-		movable.add(s);
-		/*for(int testRange=0;testRange<200;testRange++){
-			System.out.println();
-			for(int i=0;i<3;i++){
-				ArrayList<Sphere> list=new ArrayList<Sphere>();
-				
-				for(int j=0;j<200*testRange;j++){
-					Sphere s=new Sphere(rand.nextInt(),rand.nextInt(),null,1);
-					list.add(s);
-				}
-				
-				
-				
-			long time1=System.currentTimeMillis();
+	}
+	
+	private void wallCollision(Movable m){
+		double x=m.getX(),y=m.getY(),width=m.getBoundingWidth(),height=m.getBoundingHeight();;
+		double time;
+		if(x<0){
+			time=x/m.getVelX(); 
+			m.reflect(new Vector(-1,0),time);
+		}else if(x+width>this.width){
+			time=(x+width-this.width)/m.getVelX();
+			m.reflect(new Vector(1,0),time);
+		}
+		if(y<0){
+			time= y/m.getVelY();
+			m.reflect(new Vector(0,-1),time);
 			
-			CollisionList c=new CollisionList(10);
-			for(Collidable cc:movable){
-				c.add(cc);
-			}
-			long time2=System.currentTimeMillis();
-			System.out.print((time2-time1)+",");
-			}
-		}*/
-		/*
-		CollisionList c2=new CollisionList(10);
-		for(Collidable cc:movable){
-			c2.add(cc);
+		}else if(y+height>this.height){
+			time=(y+height-this.height)/m.getVelY();
+			m.reflect(new Vector(0,1),time);
 		}
-		
-		long time3=System.currentTimeMillis();
-		CollisionList c3=new CollisionList(10);
-		for(Collidable cc:movable){
-			c3.add(cc);
-		}
-		
-		long time4=System.currentTimeMillis();
-		CollisionList c4=new CollisionList(10);
-		for(Collidable cc:movable){
-			c2.add(cc);
-		}
-		
-		long time5=System.currentTimeMillis();
-		
-		System.out.println("time elapsed"+(time2-time1));
-		System.out.println("time elapsed"+(time3-time2));
-		System.out.println("time elapsed"+(time4-time3));
-		System.out.println("time elapsed"+(time5-time4));
-		//System.out.println(c);/
-		/**/
-		//System.exit(0);
-		/*s=new Sphere(400,200,new Vector(00,00),10000);
-		rendered.add(s);
-		movable.add(s);/**/
-		for(Movable m:movable){
-			m.setCOR(1);
-		}
-		
-		
 	}
-	public void addShpere(){
-		//Sphere s=new Sphere(rand.nextInt(1)+20,rand.nextInt(1)+220,new Vector(rand.nextInt(1)+800,rand.nextInt(1)-200/**/),rand.nextInt(1)+150);
-		Sphere s=new Sphere(rand.nextInt(1)+20,rand.nextInt(1)+220,new Vector(rand.nextInt(400)-800,rand.nextInt(300)-600/**/),rand.nextInt(1)+150);
-		
-		rendered.add(s);
-		movable.add(s);
-		
+	
+	public void wallCollision(){
+		for(Movable m : movable){
+			wallCollision(m);
+		}
+
 	}
+
+	
+	
 	public void advance(){
 		advance(20.0/1000);
 		
 	}
-	
-	public void wallCollision(double seconds){
-		for(Movable m : movable){
-			double x=m.getX(),y=m.getY(),width=m.getBoundingWidth(),height=m.getBoundingHeight();;
-			if(x<0){
-				m.reflect(new Vector(-1,0));
-				
-			}else if(x+width>this.width){
-				m.reflect(new Vector(1,0));
-			}
-			if(y<0){
-				m.reflect(new Vector(0,-1));
-			}else if(y+height>this.height){
-				m.reflect(new Vector(0,1));
-			}
-		}
-
-	}
-
-	private boolean checkCollision(Collidable m1, Collidable m2){
-		if(m1 instanceof Sphere){
-			Sphere s1 =(Sphere)m1;
-			if(m2 instanceof Sphere){
-				Sphere s2 =(Sphere)m2;
-				
-				double s1rad=s1.getRadius();
-				double s2rad=s2.getRadius();
-				
-				if (s1.getPos().add(new Vector(s1rad,s1rad)).distance(s2.getPos().add(new Vector(s2rad,s2rad)))<s1rad+s2rad){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
 	public void advance(double seconds){
-		wallCollision(seconds);
-		
-		
 		/**/
 		CollisionList c=new CollisionList(width,height,10);
+		
 		for(Movable m:movable){
 			
 			m.advance(seconds);
@@ -207,20 +136,32 @@ public class Collision_Simulator {
 			c.add(m);
 		}
 		c.checkCollisions();
+		wallCollision();
 		
-		/*///
+		/*///depricated
 		int length=movable.size();
 		for(int i=0;i<length;i++){
 			movable.get(i).advance(seconds);
 			for(int j=i+1;j<length;j++){
-				
 				if(checkCollision(movable.get(i),movable.get(j))){
 					movable.get(i).bounce(movable.get(j));
 				}
 			}
 		}/**/
+		
+		
+	}
+	public void updateScreen() {
 		if(view!=null)
-		view.updateScreen(rendered);
+			view.updateScreen(rendered);
+		
+	}
+	public void setCOR(double parseDouble) {
+		this.COR=parseDouble;
+		for(Movable m: movable){
+			m.setCOR(parseDouble);
+		}
+		
 	}
 	
 	

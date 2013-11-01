@@ -109,8 +109,8 @@ public class CollisionList {
 					subLists[CollisionList.EAST].add(c);
 					
 					if(c.getY()+c.getBoundingHeight()>midY){
-						
-						//subLists[CollisionList.SOUTH_EAST].add(c);
+
+						subLists[CollisionList.SOUTH_EAST].add(c);
 					}
 				}/**/
 				

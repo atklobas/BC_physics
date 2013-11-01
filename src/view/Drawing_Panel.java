@@ -21,14 +21,16 @@ public class Drawing_Panel extends JPanel{
 	private BufferedImage[] image;
 	private int imageLength=2;
 	private int currentImage=1;
-	
+	int offset=60;
+	int barHeight=0;
 	public Drawing_Panel(int x, int y){
+		y+=barHeight;
 		this.width=x;
 		this.height=y;
 		this.setPreferredSize(new Dimension(x,y));
 		image=new BufferedImage[imageLength];
 		for(int i=0;i<imageLength;i++){
-			image[i]=new BufferedImage(x,y,BufferedImage.TYPE_INT_ARGB);
+			image[i]=new BufferedImage(x+200,y+200,BufferedImage.TYPE_INT_ARGB);
 		}
 		
 	}
@@ -37,8 +39,15 @@ public class Drawing_Panel extends JPanel{
 		
 		int num=currentImage+1;
 		Graphics2D g=image[num%imageLength].createGraphics();
+		boolean firstPass=true;
 		for(Renderable r:toRender){
-			g.drawImage(r.getImage(), r.getImageX(), r.getImageY(), null);
+			if(firstPass){
+				g.drawImage(r.getImage(), r.getImageX()+offset, r.getImageY()+offset, null);
+				firstPass=false;
+			}else{
+				g.drawImage(r.getImage(), r.getImageX()+offset, r.getImageY()+offset+barHeight, null);
+			}
+			
 		}
 		currentImage=num;
 		objectsRendered=toRender.size();
@@ -66,17 +75,17 @@ int objectsRendered=0;
         	
         	lastTime=q.remove();
         }
-        g.drawImage(image[currentImage%imageLength], 0, 0, null);
+        g.drawImage(image[currentImage%imageLength], -offset, -offset, null);
         //if(lastTime!=time){
         Date d=new Date(time);
         String toDisplay=d+" ("+Math.round(1/(((time-lastTime)/frameAverage)/10000))/10.+" fps) objects rendered="+this.objectsRendered;   
         g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,15));
 	        
 	        g.setColor(Color.black);
-	        g.fillRect(5, 5, (int)(toDisplay.length()*9)+10, 20);
+	        g.fillRect(0, 0, ((int)(toDisplay.length()*9)+10), 20);
 	        g.setColor(Color.GREEN);
-	        g.drawString(toDisplay,10,20);
-        
+	        g.drawString(toDisplay,10,15);
     }
+	
 
 }
