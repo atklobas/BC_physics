@@ -8,5 +8,7 @@ public interface Renderable {
 	int getImageY();
 	Image getImage();
 	public Color getColor();
+	Shape getShape();
+}
 
 }
