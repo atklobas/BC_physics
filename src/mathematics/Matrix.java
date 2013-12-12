@@ -121,7 +121,10 @@ public class Matrix {
 		
 		
 	}
-	
+	/**
+	 * returns an inverse of the matrix, only works with orthoganol matracies 
+	 * @return an inverse of this matrix
+	 */
 	public Matrix invert(){
 		if(columns!=rows){
 			throw new UnsupportedOperationException("inverse of a "+columns+"by"+rows+"matrix is not defined");

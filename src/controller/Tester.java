@@ -8,7 +8,7 @@ import model.Collision_Simulator;
 import model.Sphere;
 /**
  * 
- * @author prog
+ * @author Anthony Klobas
  * 
  * this class is currently used to load test cases into the the game
  * 
@@ -24,6 +24,8 @@ public class Tester {
 		//sim.addGameObject(new Sphere(780,300, new Vector(-200,0),100));
 		//this.addRandomCircles(200);
 		//sim.addGameObject(new Line(200,100,600,500));
+		//sim.addGameObject(new Line(200,500,600,100));
+		
 		sim.addGameObject(new Box(100,100,100,100));
 	}
 	

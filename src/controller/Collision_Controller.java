@@ -1,131 +1,163 @@
 package controller;
 
 import java.awt.AWTEvent;
-import java.awt.Event;
 import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.JOptionPane;
 
 import model.Collision_Simulator;
-
 import view.Collision_View;
 
 public class Collision_Controller implements ActionListener, MouseListener, MouseMotionListener{
-	private Timer timer;
+	
 	private Collision_View view;
 	private Collision_Simulator model;
-	private int width, height;
-	private long lastTime=0;
-	private TimerTask gameloop;
-	private boolean isPaused=true;
-	private Queue<AWTEvent> queue=new LinkedList<AWTEvent>();
-	
 	private Tester tester;
 	
+	//A time set to proc every 20 millis
+	private Timer timer;
+	//timers can be inconsistent, so keep track of time
+	private long lastTime=0;
+	private TimerTask gameloop;//points the timer at the gameloop
+	private boolean isPaused=true;
+	
+	
+	@SuppressWarnings("unused")
+	private int width, height;
+	
+	private Queue<AWTEvent> queue=new LinkedList<AWTEvent>();
+	
+	/**
+	 * creates a Controller which then creates a model and view
+	 * 
+	 * @param width width of screen
+	 * @param height height of screen
+	 */
 	public Collision_Controller(int width, int height){
 		this.width=width;
 		this.height=height;
-		timer=new Timer();
 		
+		//create a view which can update the controller(this)
 		view = new Collision_View(width,height, this);
+		//create a model which can update to the view
 		model = new Collision_Simulator(width,height,view);
+		
 		tester=new Tester(model);
+		
+		//make events in the view update this controller
 		view.addMouseListener(this);
 		view.addMouseMotionListener(this);
 		view.addActionListener(this);
 		
 		
-		
+		timer=new Timer();
 		tester.testCase();
 		gameloop=getLoopTask();
 		startTimer();
 		
 	}
+	
+	/**
+	 * gets a time task pointing at the start of the game logic
+	 * @return 
+	 */
 	private TimerTask getLoopTask(){
 		return new TimerTask(){
 			public void run() {procTimer();}
 		};
 	}
-	
-	public void gameLoop(){
+	/**
+	 * entry point for the timer, should filter out the stack of repeated procs
+	 * when there is a frame of lag.
+	 */
+	public void procTimer(){
+		//TODO filter out procs that happen in significantly less than 20 millis
+		gameLogic();
+	}
+	/**
+	 * contains all the logic that periodically updates the model
+	 */
+	public void gameLogic(){
 		if(lastTime==0){
+			//use first one to get a baring for time, 
 			lastTime=System.currentTimeMillis();
+			//cant to logic because delta time is undefined(0)
 		}else{
-			AWTEvent event=null;
-			
-			
-			while((event=queue.poll())!=null){
-				
-				if(event instanceof MouseEvent){
-					MouseEvent mouse=(MouseEvent)event;
-					tester.placeSphere(startx, starty,endx-startx,endy-starty,mouse.isShiftDown());
-					System.out.println(new mathematics.Vector(mouse.getX(),mouse.getY()));
-				}else if(event instanceof ActionEvent){
-					ActionEvent action=(ActionEvent)event;
-					if(action.getActionCommand()=="Reset"){
-						model.reset();
-					}else if(action.getActionCommand()=="Add Cradle"){
-						tester.addNewtonsCradle();
-					}else if(action.getActionCommand()=="Add Random"){
-						tester.addRandomCircles(10);
-					}else if(action.getActionCommand()=="Add CurrentTest"){
-						tester.testCase();
-					}else if(action.getActionCommand()=="Set COR"){
-						gameloop.cancel();
-						gameloop=getLoopTask();
-						String s = (String)JOptionPane.showInputDialog("give coefficiant of restitution!");
-						try{
-							model.setCOR(Double.parseDouble(s));
-						} catch(Exception e){
-							System.err.println("invalid input");
-						}
-						timer.schedule(gameloop, 20, 20);
-					}else if(action.getActionCommand()=="New"){
-						model.reset();
-						tester.addNewtonsCradle();
-					}else if(action.getActionCommand()=="Quit"){
-						System.exit(0);
-					}else if(action.getActionCommand()=="Set Gravity"){
-						gameloop.cancel();
-						gameloop=getLoopTask();
-						String s = (String)JOptionPane.showInputDialog("give gravity!!");
-						try{
-							model.setGravity(Double.parseDouble(s));
-						} catch(Exception e){
-							System.err.println("invalid input");
-						}
-						timer.schedule(gameloop, 20, 20);
-						
-					}else if(action.getActionCommand()=="Add Large Random"){
-						tester.addRandomCircles(200);
-					}
-					System.out.println(action.getActionCommand());
-				}
-				
-				
-			}
-			
-			
+			//model modification methods are not thread safe, so do them in the gameloop
+			interpretCommands();
 			
 			long thisTime=System.currentTimeMillis();
 			if(!isPaused){
 				model.advance((/**/20/*/Math.min(thisTime-lastTime,100)/**/)/1000.0);
-				
 			}
-			model.updateScreen();
+			
+			model.updateView();
 			lastTime=thisTime;
 		}
-		
 	}
+	/**
+	 * iterates through the list of commands and performs them. should be called
+	 * in gameloop thread as this is not thread safe
+	 */
+	public void interpretCommands(){
+		AWTEvent event=null;
+		while((event=queue.poll())!=null){
+			if(event instanceof MouseEvent){
+				MouseEvent mouse=(MouseEvent)event;
+				tester.placeSphere(startx, starty,endx-startx,endy-starty,mouse.isShiftDown());
+				System.out.println(new mathematics.Vector(mouse.getX(),mouse.getY()));
+			}else if(event instanceof ActionEvent){
+				ActionEvent action=(ActionEvent)event;
+				if(action.getActionCommand()=="Reset"){
+					model.reset();
+				}else if(action.getActionCommand()=="Add Cradle"){
+					tester.addNewtonsCradle();
+				}else if(action.getActionCommand()=="Add Random"){
+					tester.addRandomCircles(10);
+				}else if(action.getActionCommand()=="Add CurrentTest"){
+					tester.testCase();
+				}else if(action.getActionCommand()=="Set COR"){
+					gameloop.cancel();
+					gameloop=getLoopTask();
+					String s = (String)JOptionPane.showInputDialog("give coefficiant of restitution!");
+					try{
+						model.setCOR(Double.parseDouble(s));
+					} catch(Exception e){
+						System.err.println("invalid input");
+					}
+					timer.schedule(gameloop, 20, 20);
+				}else if(action.getActionCommand()=="New"){
+					model.reset();
+					tester.addNewtonsCradle();
+				}else if(action.getActionCommand()=="Quit"){
+					System.exit(0);
+				}else if(action.getActionCommand()=="Set Gravity"){
+					gameloop.cancel();
+					gameloop=getLoopTask();
+					String s = (String)JOptionPane.showInputDialog("give gravity!!");
+					try{
+						model.setGravity(Double.parseDouble(s));
+					} catch(Exception e){
+						System.err.println("invalid input");
+					}
+					timer.schedule(gameloop, 20, 20);
+				}else if(action.getActionCommand()=="Add Large Random"){
+					tester.addRandomCircles(200);
+				}
+				System.out.println(action.getActionCommand());
+			}
+		}
+	}
+	/**
+	 * starts the timer
+	 */
 	public void startTimer() {
 		synchronized(this){
-			model.advance(0.0);
+			//model.advance(0.0);
 			timer.scheduleAtFixedRate(gameloop, 500, 20);
 			isPaused=false;
 		}
@@ -133,9 +165,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 	}
 	
 	
-	public void procTimer(){
-		gameLoop();
-	}
+	
 	
 
 	@Override

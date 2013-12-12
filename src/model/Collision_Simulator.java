@@ -133,7 +133,7 @@ if(m instanceof Movable)((Movable)m).setCOR(COR);
 		
 		
 	}
-	public void updateScreen() {
+	public void updateView() {
 		if(view!=null)
 			view.updateScreen(rendered);
 		

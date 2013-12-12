@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
-import mathematics.Vector;
 import view.Renderable;
 
 /**
@@ -20,6 +19,13 @@ public class Box extends Collidable implements Renderable{
 	private Line[] lines=new Line[4];
 	private BufferedImage image;
 	int x, y;
+	/**
+	 * creates a box
+	 * @param x top left x
+	 * @param y top left right
+	 * @param width width of box
+	 * @param height height of box
+	 */
 	public Box(double x, double y, int width,int height) {
 		this.x=(int)x;
 		this.y=(int)y;
