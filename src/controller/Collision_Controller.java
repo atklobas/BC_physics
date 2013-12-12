@@ -217,7 +217,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 
 	@Override
 	public void mouseDragged(MouseEvent event) {
-		System.out.println("mouse dragged ("+event.getX()+","+event.getY()+")");
+		//System.out.println("mouse dragged ("+event.getX()+","+event.getY()+")");
 		
 	}
 

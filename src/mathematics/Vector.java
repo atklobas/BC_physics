@@ -98,6 +98,13 @@ public class Vector {
 	public String toString(){
 		return Arrays.toString(vector);
 	}
+	public String coordinateList(){
+		String ret="";
+		for(int i=0;i<vector.length;i++){
+			
+		}
+		return ret;
+	}
 	public double distance(Vector pos) {
 		return this.subtract(pos).getLength();
 	}

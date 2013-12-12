@@ -27,11 +27,13 @@ public class Tester {
 		//sim.addGameObject(new Line(200,500,600,100));
 		
 		//sim.addGameObject(new Box(100,100,100,100));
+		//sim.addGameObject(new Sphere(206.0, 108.0, new Vector(253,57).subtract(new Vector(206,108)).negate(),100));
+		
 		sim.addGameObject(new EmptyPolygon(new int[]{
-				100,200,100
+				100,200,501,100
 		},new int[]{
-				100,100,200
-		}));
+				100,100,405,200
+		}));/**/
 	}
 	
 	
