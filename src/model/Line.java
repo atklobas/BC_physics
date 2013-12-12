@@ -84,10 +84,8 @@ public class Line extends Collidable implements Renderable{
 					s.advance(time);
 				}/**/
 			}else if(p2.distance(s.getCenter())<s.getRadius()){
-				System.out.println("derp");
 				s.bounceOffPoint(p2);
 			}else if(p1.distance(s.getCenter())<s.getRadius()){
-				System.out.println("derp");
 				s.bounceOffPoint(p1);
 			}
 			
