@@ -1,6 +1,5 @@
 package model;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -10,7 +9,12 @@ import view.Renderable;
 import mathematics.Matrix;
 import mathematics.Vector;
 
-
+/**
+ * A line that spheres can bounce off of
+ * 
+ * @author Anthony Klobas
+ *
+ */
 public class Line extends Collidable implements Renderable{
 	private double x1, y1, x2, y2;
 	private Vector normal, p1,p2;
@@ -19,13 +23,9 @@ public class Line extends Collidable implements Renderable{
 	private double length;
 	
 	public Line(Vector p1, Vector p2){
-		
 		this(p1.getElement(0),p1.getElement(1),p2.getElement(0),p2.getElement(1));
-		
-		
-		
-		
 	}
+	
 	public Line(double x1, double y1,double x2, double y2){
 		this.x1=x1;
 		this.x2=x2;
@@ -70,9 +70,11 @@ public class Line extends Collidable implements Renderable{
 			double x=toBase.apply(s.getCenter().subtract(this.p1)).getElement(1);
 			
 			if(Math.abs(height)<s.getRadius()&&x<0&&-length<x){
-				
-				
-				if(height>0){
+				/* using trag means even if the center of the ball passes the line
+				 * it will stop the ball from passing through line
+				 * if you use height
+				 */
+				if(traj<0){
 					double time=Math.abs((s.getRadius()-height)/traj);
 					s.advance(-time);
 					s.reflect(normal.negate());
@@ -82,8 +84,9 @@ public class Line extends Collidable implements Renderable{
 					s.advance(-time);
 					s.reflect(normal);
 					s.advance(time);
-				}/**/
+				}
 			}else if(p2.distance(s.getCenter())<s.getRadius()){
+				//if at end of line, line acts like a point
 				s.bounceOffPoint(p2);
 			}else if(p1.distance(s.getCenter())<s.getRadius()){
 				s.bounceOffPoint(p1);

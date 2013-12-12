@@ -8,6 +8,13 @@ import java.awt.image.BufferedImage;
 import mathematics.Vector;
 import view.Renderable;
 
+/**
+ * A box that can hold a ball inside of it
+ * 
+ * @author Anthony Klobas
+ *
+ */
+
 public class Box extends Collidable implements Renderable{
 	private int width,height;
 	private Line[] lines=new Line[4];
