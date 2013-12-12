@@ -26,7 +26,12 @@ public class Tester {
 		//sim.addGameObject(new Line(200,100,600,500));
 		//sim.addGameObject(new Line(200,500,600,100));
 		
-		sim.addGameObject(new Box(100,100,100,100));
+		//sim.addGameObject(new Box(100,100,100,100));
+		sim.addGameObject(new EmptyPolygon(new int[]{
+				100,200,100
+		},new int[]{
+				100,100,200
+		}));
 	}
 	
 	
