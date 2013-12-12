@@ -20,7 +20,7 @@ public class Sphere extends Movable implements Renderable{
 	
 	public Sphere(double x, double y, Vector trajectory,double mass){
 		super(x,y,trajectory,mass);
-		System.out.println("new Sphere("+x+","+y+", new Vector("+trajectory+"),"+mass);
+		System.out.println("new Sphere("+x+","+y+", new Vector("+trajectory.coordinateList()+"),"+mass+");");
 		color=(new Random()).nextInt();
 		thisnum=number++;
 		this.radius=Math.sqrt(mass);

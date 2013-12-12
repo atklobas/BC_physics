@@ -28,7 +28,7 @@ public class Tester {
 		
 		//sim.addGameObject(new Box(100,100,100,100));
 		//sim.addGameObject(new Sphere(206.0, 108.0, new Vector(253,57).subtract(new Vector(206,108)).negate(),100));
-		
+		sim.addGameObject(new Sphere(533.0,130.0, new Vector(-40.0, 27.0),70.0));
 		sim.addGameObject(new EmptyPolygon(new int[]{
 				100,200,501,100
 		},new int[]{

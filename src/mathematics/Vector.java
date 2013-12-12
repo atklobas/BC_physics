@@ -99,9 +99,9 @@ public class Vector {
 		return Arrays.toString(vector);
 	}
 	public String coordinateList(){
-		String ret="";
-		for(int i=0;i<vector.length;i++){
-			
+		String ret=""+vector[0];
+		for(int i=1;i<vector.length;i++){
+			ret+=", "+vector[i];
 		}
 		return ret;
 	}
