@@ -6,5 +6,6 @@ public interface Renderable {
 	int getImageX();
 	int getImageY();
 	Image getImage();
+	Shape getShape();
 
 }
