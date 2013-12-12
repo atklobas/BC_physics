@@ -10,5 +10,3 @@ public interface Renderable {
 	public Color getColor();
 	Shape getShape();
 }
-
-}
