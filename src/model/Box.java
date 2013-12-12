@@ -82,18 +82,17 @@ public class Box extends Collidable implements Renderable{
 	}
 
 	@Override
-	public void collide(Collidable C) {
-		for(Line l: lines){
-			l.collide(C);
-		}
+	public boolean collide(Collidable C) {
+		return collide(C, false);
 		
 	}
 
 	@Override
-	public void collide(Collidable C, boolean ignorePosition) {
+	public boolean collide(Collidable C, boolean ignorePosition) {
 		for(Line l: lines){
-			l.collide(C, ignorePosition);
+			if(l.collide(C))return true;
 		}
+		return false;
 		
 	}
 

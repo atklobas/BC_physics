@@ -90,7 +90,7 @@ public class Collision_View {
         }
         editMenu.addSeparator();
         
-        String[] editItems=new String[]{"Pause", "Reset","Set Gravity","Set COR", "Add Cradle","Add Random","Add Large Random","Add CurrentTest"};
+        String[] editItems=new String[]{"Pause", "Reset","Set MillisPerFrame","Set Gravity","Set COR", "Add Cradle","Add Random","Add Large Random","Add CurrentTest"};
         for(String s:editItems){
         	temp=new JMenuItem(s);
         	if(s=="Pause"){

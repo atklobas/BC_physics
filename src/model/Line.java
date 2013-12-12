@@ -59,13 +59,13 @@ public class Line extends Collidable implements Renderable {
 	}
 
 	@Override
-	public void collide(Collidable c) {
-		collide(c, false);
+	public boolean collide(Collidable c) {
+		return collide(c, false);
 
 	}
 
 	@Override
-	public void collide(Collidable c, boolean ignorePosition) {
+	public boolean collide(Collidable c, boolean ignorePosition) {
 		if (c instanceof Sphere) {
 			Sphere s = (Sphere) c;
 
@@ -83,30 +83,29 @@ public class Line extends Collidable implements Renderable {
 				 * use height
 				 */
 				// TODO see where ball is at time of collision
-				if (traj < 0) {
-					double time = Math.abs((s.getRadius() - height) / traj);
-					//System.out.println(time);
+				double time=Math.min(Math.abs((s.getRadius() - height) / traj),Math.abs((-1 * s.getRadius() - height) / traj) );
+				if(time<1){
 					s.advance(-time);
-					//if(Math.abs(time)<=0.00000001){collide(s,ignorePosition);s.advance(time);return;}
-					s.reflect(normal.negate());
-					s.advance(time);
-				} else {
-					double time = Math
-							.abs((-1 * s.getRadius() - height) / traj);
-					//System.out.println(time);
-					s.advance(-time);
-					//if(Math.abs(time)<=0.00000001){collide(s,ignorePosition);s.advance(time);return;}
-					s.reflect(normal);
+					if (traj < 0) {
+						s.reflect(normal.negate());
+					} else {
+						s.reflect(normal);
+					}
 					s.advance(time);
 				}
+				return true;
 			} else if (p2.distance(s.getCenter()) < s.getRadius()) {
 				// if at end of line, line acts like a point
 				s.bounceOffPoint(p2);
+				return true;
 			} else if (p1.distance(s.getCenter()) < s.getRadius()) {
 				s.bounceOffPoint(p1);
+				return true;
 			}
+			
 
 		}
+		return false;
 
 	}
 

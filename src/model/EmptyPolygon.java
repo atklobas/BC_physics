@@ -68,16 +68,21 @@ public class EmptyPolygon extends Collidable implements Renderable{
 	}
 
 	@Override
-	public void collide(Collidable C) {
-		collide(C, false);
+	public boolean collide(Collidable C) {
+		return collide(C, false);
 		
 	}
-
+int temp=0;
 	@Override
-	public void collide(Collidable C, boolean ignorePosition) {
+	public boolean collide(Collidable C, boolean ignorePosition) {
+		temp++;
 		for(Line l: this.sides){
-			l.collide(C, ignorePosition);
+			if(l.collide(C, ignorePosition)){
+				System.out.println("collided"+temp);
+				return true;
+			}
 		}
+		return false;
 		
 	}
 

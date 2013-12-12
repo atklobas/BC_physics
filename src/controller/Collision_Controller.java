@@ -20,6 +20,8 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 	
 	//A time set to proc every 20 millis
 	private Timer timer;
+	private int millisPerProc=20;
+	private double timeDialation=1;
 	//timers can be inconsistent, so keep track of time
 	private long lastTime=0;
 	private TimerTask gameloop;//points the timer at the gameloop
@@ -92,7 +94,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 			
 			long thisTime=System.currentTimeMillis();
 			if(!isPaused){
-				model.advance((/**/20/*/Math.min(thisTime-lastTime,100)/**/)/1000.0);
+				model.advance(timeDialation*(/**/20/*/Math.min(thisTime-lastTime,100)/**/)/1000.0);
 			}
 			
 			model.updateView();
@@ -106,6 +108,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 	public void interpretCommands(){
 		AWTEvent event=null;
 		while((event=queue.poll())!=null){
+			//TODO log time and operation
 			if(event instanceof MouseEvent){
 				MouseEvent mouse=(MouseEvent)event;
 				tester.placeSphere(startx, starty,endx-startx,endy-starty,mouse.isShiftDown());
@@ -120,6 +123,16 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 					tester.addRandomCircles(10);
 				}else if(action.getActionCommand()=="Add CurrentTest"){
 					tester.testCase();
+				}else if(action.getActionCommand()=="Set MillisPerFrame"){
+					gameloop.cancel();
+					gameloop=getLoopTask();
+					String s = (String)JOptionPane.showInputDialog("Give milliseconds per rendering cycle!");
+					try{
+						millisPerProc=(Integer.parseInt(s));
+					} catch(Exception e){
+						System.err.println("invalid input");
+					}
+					timer.schedule(gameloop, millisPerProc, millisPerProc);
 				}else if(action.getActionCommand()=="Set COR"){
 					gameloop.cancel();
 					gameloop=getLoopTask();
@@ -129,7 +142,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 					} catch(Exception e){
 						System.err.println("invalid input");
 					}
-					timer.schedule(gameloop, 20, 20);
+					timer.schedule(gameloop, millisPerProc, millisPerProc);
 				}else if(action.getActionCommand()=="New"){
 					model.reset();
 					tester.addNewtonsCradle();
@@ -144,7 +157,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 					} catch(Exception e){
 						System.err.println("invalid input");
 					}
-					timer.schedule(gameloop, 20, 20);
+					timer.schedule(gameloop, millisPerProc, millisPerProc);
 				}else if(action.getActionCommand()=="Add Large Random"){
 					tester.addRandomCircles(200);
 				}
@@ -158,7 +171,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 	public void startTimer() {
 		synchronized(this){
 			//model.advance(0.0);
-			timer.scheduleAtFixedRate(gameloop, 500, 20);
+			timer.scheduleAtFixedRate(gameloop, 500, millisPerProc);
 			isPaused=false;
 		}
 		

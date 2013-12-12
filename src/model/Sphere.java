@@ -137,18 +137,20 @@ public class Sphere extends Movable implements Renderable{
 		return C instanceof Sphere;
 	}
 	@Override
-	public void collide(Collidable C) {
-		collide(C, false);
+	public boolean collide(Collidable C) {
+		return collide(C, false);
 	}
 	@Override
-	public void collide(Collidable C, boolean ignorePosition) {
+	public boolean collide(Collidable C, boolean ignorePosition) {
 		if(C instanceof Sphere){//never trust, always check
 			Sphere other=(Sphere)C;
 			if (ignorePosition || getCenter().distance(other.getCenter())<this.radius+other.radius){
 				bounce (other);
+				return true;
 				
 			}
 		}
+		return false;
 	}
 	
 	private void bounce(Sphere other){

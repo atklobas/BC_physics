@@ -114,7 +114,6 @@ if(m instanceof Movable)((Movable)m).setCOR(COR);
 			c.add(m);
 			
 		}
-		
 		c.checkCollisions();
 		wallCollision();
 		//wallCollision();
