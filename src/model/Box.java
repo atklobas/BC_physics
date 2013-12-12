@@ -1,53 +1,116 @@
 package model;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 import mathematics.Vector;
 import view.Renderable;
 
-public class Box extends Movable implements Renderable{
+public class Box extends Collidable implements Renderable{
 	private int width,height;
-	public Box(double x, double y, Vector trajectory, double mass, int width,int height) {
-		super(x, y, trajectory, mass);
+	private Line[] lines=new Line[4];
+	private BufferedImage image;
+	int x, y;
+	public Box(double x, double y, int width,int height) {
+		this.x=(int)x;
+		this.y=(int)y;
 		this.width=width;
 		this.height=height;
-	}
-
-	@Override
-	public void bounce(Movable m) {
-		// TODO Auto-generated method stub
+		lines[0]=new Line(x,y,x+width,y);
+		lines[1]=new Line(x+width,y,x+width,y+height);
+		lines[2]=new Line(x+width,y+height,x,y+height);
+		lines[3]=new Line(x,y+height,x,y);
+		image = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
 		
 	}
 
+
+
 	@Override
 	public int getBoundingHeight() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return height;
 	}
 
 	@Override
 	public int getBoundingWidth() {
-		// TODO Auto-generated method stub
-		return 0;
+		return width;
 	}
 
 
 	@Override
 	public Image getImage() {
-		// TODO Auto-generated method stub
-		return null;
+		Graphics2D g= image.createGraphics();
+		//g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+		//g.setColor(new Color(255,0,255,0));
+		g.setColor(Color.RED);
+		//g.fillRect(0, 0, width, height);
+		g.setColor(Color.RED);
+//		System.out.println(x1+","+y1+","+x2+","+y2);
+		g.fillRect(0, 0, width, height);
+		return image;
 	}
 
 	@Override
 	public int getImageX() {
-		// TODO Auto-generated method stub
-		return 0;
+		return x;
 	}
 
 	@Override
 	public int getImageY() {
+		return y;
+	}
+
+	@Override
+	public boolean canCollideWith(Collidable C) {
+		return C instanceof Sphere;
+	}
+
+	@Override
+	public void collide(Collidable C) {
+		for(Line l: lines){
+			l.collide(C);
+		}
+		
+	}
+
+	@Override
+	public void collide(Collidable C, boolean ignorePosition) {
+		for(Line l: lines){
+			l.collide(C, ignorePosition);
+		}
+		
+	}
+
+	@Override
+	public int getCollisionPrecedence() {
+		return 2;
+	}
+
+
+
+	@Override
+	public void advance(double seconds) {
 		// TODO Auto-generated method stub
-		return 0;
+		
+	}
+
+
+
+	@Override
+	public double getX() {
+		// TODO Auto-generated method stub
+		return x;
+	}
+
+
+
+	@Override
+	public double getY() {
+		// TODO Auto-generated method stub
+		return y;
 	}
 
 }

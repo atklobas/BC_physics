@@ -26,6 +26,8 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 	private boolean isPaused=true;
 	private Queue<AWTEvent> queue=new LinkedList<AWTEvent>();
 	
+	private Tester tester;
+	
 	public Collision_Controller(int width, int height){
 		this.width=width;
 		this.height=height;
@@ -33,12 +35,14 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 		
 		view = new Collision_View(width,height, this);
 		model = new Collision_Simulator(width,height,view);
-		
+		tester=new Tester(model);
 		view.addMouseListener(this);
 		view.addMouseMotionListener(this);
 		view.addActionListener(this);
-		//model.addRandomCircles(50);
-		model.addNewtonsCradle();
+		
+		
+		
+		tester.testCase();
 		gameloop=getLoopTask();
 		startTimer();
 		
@@ -60,16 +64,18 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 				
 				if(event instanceof MouseEvent){
 					MouseEvent mouse=(MouseEvent)event;
-					model.placeSphere(mouse.getX(), mouse.getY(),mouse.isShiftDown());
+					tester.placeSphere(startx, starty,endx-startx,endy-starty,mouse.isShiftDown());
 					System.out.println(new mathematics.Vector(mouse.getX(),mouse.getY()));
 				}else if(event instanceof ActionEvent){
 					ActionEvent action=(ActionEvent)event;
 					if(action.getActionCommand()=="Reset"){
 						model.reset();
 					}else if(action.getActionCommand()=="Add Cradle"){
-						model.addNewtonsCradle();
+						tester.addNewtonsCradle();
 					}else if(action.getActionCommand()=="Add Random"){
-						model.addRandomCircles(10);
+						tester.addRandomCircles(10);
+					}else if(action.getActionCommand()=="Add CurrentTest"){
+						tester.testCase();
 					}else if(action.getActionCommand()=="Set COR"){
 						gameloop.cancel();
 						gameloop=getLoopTask();
@@ -82,7 +88,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 						timer.schedule(gameloop, 20, 20);
 					}else if(action.getActionCommand()=="New"){
 						model.reset();
-						model.addNewtonsCradle();
+						tester.addNewtonsCradle();
 					}else if(action.getActionCommand()=="Quit"){
 						System.exit(0);
 					}else if(action.getActionCommand()=="Set Gravity"){
@@ -97,7 +103,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 						timer.schedule(gameloop, 20, 20);
 						
 					}else if(action.getActionCommand()=="Add Large Random"){
-						model.addRandomCircles(200);
+						tester.addRandomCircles(200);
 					}
 					System.out.println(action.getActionCommand());
 				}
@@ -165,16 +171,16 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 		
 	}
 
+	private int startx,starty,endx, endy;
 	@Override
 	public void mousePressed(MouseEvent event) {
-			queue.add(event);
-			
-
-		
+		startx=event.getX();starty=event.getY();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent event) {
+		endx=event.getX();endy=event.getY();
+		queue.add(event);
 		//System.out.println("mouse released");
 		
 	}

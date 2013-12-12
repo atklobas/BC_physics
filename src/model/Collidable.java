@@ -9,6 +9,13 @@ public abstract class Collidable {
 	public abstract int getBoundingHeight();
 	public abstract double getX();
 	public abstract double getY();
+	public abstract boolean canCollideWith(Collidable C);
+	public abstract void collide(Collidable C);
+	public abstract void collide(Collidable C, boolean ignorePosition);
+	public abstract int getCollisionPrecedence();
+	
+	public abstract void advance(double seconds);
+	
 	public String toString(){
 		return "("+((int)getX())+","+((int)getY())+")";
 	}

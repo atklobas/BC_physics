@@ -1,6 +1,8 @@
 package mathematics;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 
@@ -15,17 +17,16 @@ public class Vector {
 	//TODO check if vectors are same length;
 	protected double vector[];
 	
-	public Vector(double x,double y){
-		vector= new double[]{x,y};
+	public Vector(int length){
+		vector= new double[length];
 	}
-	public Vector(double x,double y, double z){
-		vector= new double[]{x,y,z};
-	}
-	public Vector(double[] vector){
+	
+	public Vector(double... field){
+		this.vector=new double[field.length];
+		System.arraycopy(field, 0, this.vector, 0, field.length);
 		
-		this.vector=new double[vector.length];
-		System.arraycopy(vector, 0, this.vector, 0, vector.length);
 	}
+
 	
 	private void compareOrThrow(Vector v){
 		if(this.vector.length!=v.vector.length){
@@ -100,6 +101,21 @@ public class Vector {
 	}
 	public double distance(Vector pos) {
 		return this.subtract(pos).getLength();
+	}
+	public static Vector sumVectors(List<Vector> forces) {
+		
+		if(forces.size()>0){
+			int length=forces.get(0).vector.length;
+			Vector ret=new Vector(length);
+			for(Vector v:forces){
+				for(int i=0;i<length;i++){
+					ret.vector[i]+=v.vector[i];
+				}
+				
+			}
+			return ret;
+		}
+		return null;
 	}
 	
 	

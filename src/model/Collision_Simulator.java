@@ -19,7 +19,7 @@ public class Collision_Simulator {
 	Collision_View view;
 	int width,height;
 	ArrayList<view.Renderable> rendered;
-	ArrayList<Movable> movable;
+	ArrayList<Collidable> collidable;
 	Random rand=new Random();
 	double COR=1;
 	
@@ -32,24 +32,22 @@ public class Collision_Simulator {
 	public void setGravity(double n){
 		gravity=new Vector(0,pixelsPerMeter*n);
 	}
-	public void placeSphere(int x, int y,boolean isImmovable){
-		Sphere s=new Sphere(x,y,new Vector(0,0),100);
-		s.setImmovable(isImmovable);
-		s.setCOR(COR);
-		rendered.add(s);
-		movable.add(s);
+	
+	public void addGameObject(Collidable m){
+if(m instanceof Movable)((Movable)m).setCOR(COR);
+		this.collidable.add(m);
+		if(m instanceof view.Renderable){
+			this.rendered.add((view.Renderable)m);
+		}
+		
 	}
 	
-	
-	public void addShpere(){
-		this.addRandomCircles(1);
-	}
 	
 	public void reset(){
 		rendered = new ArrayList<view.Renderable>();
-		movable = new ArrayList<Movable>();
-		setCOR(1);
-		setGravity(0);
+		collidable = new ArrayList<Collidable>();
+		//setCOR(1);
+		//setGravity(0);
 		rendered.add(new view.Renderable(){
 			Image im;
 			public Image getImage() {
@@ -65,32 +63,7 @@ public class Collision_Simulator {
 			public int getImageY() {return 0;}
 		});
 	}
-	public void addNewtonsCradle(){
-		Sphere s=new Sphere(50,100,new Vector(300,0),900);
-		s.setCOR(COR);
-		rendered.add(s);
-		movable.add(s);
-		
-		
-		for(int i=0;i<4;i++){
-			s=new Sphere(200+120*i,100,new Vector(0,0),900);
-			s.setCOR(COR);
-			rendered.add(s);
-			movable.add(s);
-		}
-	}
-	
-	public void addRandomCircles(int n){
-		for(int i=0;i<n;i++){
-			Sphere s=new Sphere(0,0,new Vector(rand.nextInt(200)-100,rand.nextInt(200)-100),rand.nextInt(200)+50 );
-			int width=s.getBoundingWidth();
-			int height=s.getBoundingHeight();
-			s.setPos(new Vector(rand.nextInt(this.width-width),rand.nextInt(this.height-height)));
-			s.setCOR(COR);
-			rendered.add(s);
-			movable.add(s);
-		}
-	}
+
 	
 	private void wallCollision(Movable m){
 		double x=m.getX(),y=m.getY(),width=m.getBoundingWidth(),height=m.getBoundingHeight();;
@@ -108,13 +81,15 @@ public class Collision_Simulator {
 			
 		}else if(y+height>this.height){
 			time=(y+height-this.height)/m.getVelY();
+			
 			m.reflect(new Vector(0,1),time);
+			//m.addForce(new Vector(0,Math.abs(m.getTotalForce().getElement(1))));
 		}
 	}
 	
 	public void wallCollision(){
-		for(Movable m : movable){
-			wallCollision(m);
+		for(Collidable m : collidable){
+			if(m instanceof Movable)wallCollision((Movable)m);
 		}
 
 	}
@@ -129,14 +104,21 @@ public class Collision_Simulator {
 		/**/
 		CollisionList c=new CollisionList(width,height,10);
 		
-		for(Movable m:movable){
+		for(Collidable m:collidable){
 			
-			m.advance(seconds);
-			m.setTrajectory(m.getTrajectory().add(gravity.scale(seconds)));
-			c.add(m);
+			if(m instanceof Movable)((Movable)m).addForce(gravity.scale(((Movable)m).getMass()));
 		}
+		
+		for(Collidable m:collidable){
+			m.advance(seconds);
+			c.add(m);
+			
+		}
+		
 		c.checkCollisions();
 		wallCollision();
+		//wallCollision();
+		
 		
 		/*///depricated
 		int length=movable.size();
@@ -158,10 +140,17 @@ public class Collision_Simulator {
 	}
 	public void setCOR(double parseDouble) {
 		this.COR=parseDouble;
-		for(Movable m: movable){
-			m.setCOR(parseDouble);
+		for(Collidable m: collidable){
+			if(m instanceof Movable)((Movable)m).setCOR(parseDouble);
 		}
 		
+	}
+	public int getWidth() {
+
+		return this.width;
+	}
+	public int getHeight() {
+		return this.height;
 	}
 	
 	

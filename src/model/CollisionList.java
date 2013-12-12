@@ -15,11 +15,6 @@ import mathematics.Vector;
 public class CollisionList {
 	private static final int EAST=1,SOUTH=2;
 	private static final int SOUTH_EAST=3;
-	private static final int WEST=4;
-	private static final int NORTH=5;
-	private static final int NORTH_WEST=6;
-	private static final int NORTH_EAST=7;
-	private static final int SOUTH_WEST=8;
 	private static final int CENTER=0;
 	
 	private CollisionList subLists[];
@@ -31,7 +26,6 @@ public class CollisionList {
 	
 	
 	
-	private CollisionList levelUp;
 	private int maxContained;
 	private boolean isTop, isBottom;
 	//This Constructor comes with a massive performance cost
@@ -54,7 +48,7 @@ public class CollisionList {
 		list=new ArrayList<Collidable>();
 	}
 	/**
-	 * this method is only to be used internally for instanciation of subLists;
+	 * this method is only to be used internally for instantiation of subLists;
 	 */
 	private CollisionList(int minX,int maxX, int minY, int maxY,int maxContained, CollisionList levelUp){
 		this.minX=minX;
@@ -62,7 +56,6 @@ public class CollisionList {
 		this.minY=minY;
 		this.maxY=maxY;
 		this.maxContained=maxContained;
-		this.levelUp=levelUp;
 		isTop=false;
 		isBottom=true;
 		list=new ArrayList<Collidable>();
@@ -143,48 +136,31 @@ public class CollisionList {
 				/**/
 				
 			}
-			
-			
-			
-			
-			
-			/*switch(pos){
-			default:;
-			case CollisionList.EAST:;
-			case CollisionList.SOUTH:;
-			case CollisionList.SOUTH_EAST:;
-			
-			}*/
-			
-			
-			
-			//subLists[pos].add(c);
 		}
-	}
-	private boolean checkCollision(Collidable m1, Collidable m2){
-		if(m1 instanceof Sphere){
-			Sphere s1 =(Sphere)m1;
-			if(m2 instanceof Sphere){
-				Sphere s2 =(Sphere)m2;
-				
-				double s1rad=s1.getRadius();
-				double s2rad=s2.getRadius();
-				
-				if (s1.getPos().add(new Vector(s1rad,s1rad)).distance(s2.getPos().add(new Vector(s2rad,s2rad)))<s1rad+s2rad){
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 	public void checkCollisions(){
 		if(isBottom){
 			int length=list.size();
+			Collidable a,b;
+			boolean canA,canB;
 			for(int i=0;i<length;i++){
 				for(int j=i+1;j<length;j++){
-					if(checkCollision(list.get(i),list.get(j))){
-						((Movable)(list.get(i))).bounce(((Movable)list.get(j)));
+					a=list.get(i);
+					b=list.get(j);
+					canA=a.canCollideWith(b);
+					canB=b.canCollideWith(a);
+					if(canA&&canB){
+						if(a.getCollisionPrecedence()>=b.getCollisionPrecedence()){
+							a.collide(b);
+						}else{
+							b.collide(a);
+						}
+					}else if(canA){
+						a.collide(b);
+					}else if(canB){
+						b.collide(a);
 					}
+					
 				}
 			}
 		}else{
@@ -194,15 +170,6 @@ public class CollisionList {
 		}
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	public String toString(){
 		if(isBottom){
 			String ret=list.toString();

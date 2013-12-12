@@ -2,6 +2,7 @@ package model;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import view.Renderable;
 import mathematics.Matrix;
@@ -14,11 +15,13 @@ public class Sphere extends Movable implements Renderable{
 	public static int number=0;
 	private int thisnum;
 	int dimention;
+	int color;
 	
 	
 	public Sphere(double x, double y, Vector trajectory,double mass){
-		
+
 		super(x,y,trajectory,mass);
+		color=(new Random()).nextInt();
 		thisnum=number++;
 		this.radius=Math.sqrt(mass);
 		dimention=(int)(radius*2);
@@ -42,7 +45,7 @@ public class Sphere extends Movable implements Renderable{
 			
 			g.setColor(new Color(0,momenta&255,(momenta*255/4500+150)&255));
 		}*/
-		g.setColor(Color.RED);
+		g.setColor(new Color(color&0xFFFFFF));
 		if(this.immovable){
 			g.setColor(Color.BLUE);
 		}
@@ -62,6 +65,9 @@ public class Sphere extends Movable implements Renderable{
 	}
 	public double getRadius(){
 		return radius;
+	}
+	public Vector getCenter(){
+		return getPos().add(new Vector(this.radius,this.radius));
 	}
 	public void setMass(double m){
 		if(m>10000)return;
@@ -86,12 +92,9 @@ public class Sphere extends Movable implements Renderable{
 		// TODO Auto-generated method stub
 		return (int)this.getY();
 	}
-	@Override
-	public void bounce(Movable m) {
+	/*public void bounce(Movable m) {
 		if(m instanceof Sphere){
-			
-			
-			
+
 			Sphere sphere=(Sphere)m;
 			//Vector normal =this.getPos().add(new Vector(radius,radius)).subtract(sphere.getPos().add(new Vector(sphere.radius,sphere.radius)));
 			Vector normal =this.getPos().add(new Vector(radius,radius)).subtract(sphere.getPos().add(new Vector(sphere.radius,sphere.radius)));
@@ -105,36 +108,11 @@ public class Sphere extends Movable implements Renderable{
 			double b=this.getTrajectory().getLength();
 			//
 			double time=(neededLength-depth)/c;
+			if(time>Double.MAX_VALUE)return;
 			
 			sphere.advance(-time);
 			this.advance(-time);
 			normal=this.getPos().add(new Vector(radius,radius)).subtract(sphere.getPos().add(new Vector(sphere.radius,sphere.radius)));
-			
-			
-			//double time=neededLength/(depth*v1);
-			//System.out.println(neededLength/(depth)+","+(neededLength/(depth)));
-			
-			/*System.out.println("needed "+neededLength+", depth "+depth);
-			System.out.println();
-			System.out.println(sphere.getTrajectory().scale(neededLength/depth));
-			System.out.println(sphere.getPos());
-			System.out.println(sphere.getPos().subtract(sphere.getTrajectory().getUnitVector().scale(neededLength/depth)));
-			System.out.println();
-			System.out.println(this.getTrajectory().scale(neededLength/depth));
-			System.out.println(this.getPos());
-			System.out.println(this.getPos().subtract(this.getTrajectory().getUnitVector().scale(neededLength/depth)));
-			
-			/**/
-			
-			/*if(v1!=0){
-				sphere.setPos(sphere.getPos().add(sphere.getTrajectory().scale(neededLength/(depth*v1))));
-			}
-				
-			if(v2!=0){
-				this.setPos(this.getPos().add(this.getTrajectory().scale(neededLength/depth*v2)));
-			}*/
-
-			/**/
 			
 			if(normal.getLength()==0){
 				return;
@@ -151,47 +129,69 @@ public class Sphere extends Movable implements Renderable{
 			this.advance(time);
 			
 			
-		}else if(m instanceof Box){
-			Box box= (Box)m;
-			double cx=this.getX()+radius;
-			double cy=this.getY()+radius;
-			double bx=box.getX();
-			double by=box.getY();
-			double width=0;
-			double height=0;
-			
-			if(cx<bx){
-				if(cy<by){//top left
-					
-				}else if(cy>by+height){//bottom left
-					
-				}else{///left mid;
-					
-				}
-			}else if(cx>bx+width){
-				if(cy<by){//top right
-					
-				}else if(cy>by+height){//bottom right
-					
-				}else{//right mid
-					
-				}
-			}else{
-				if(cy<by){//top
-					
-				}else if(cy>by+height){//bottom
-					
-				}else{//contained
-					
-				}
-			}
-			
-			
-			
 		}
+	}/**/
+	@Override
+	public boolean canCollideWith(Collidable C) {
+		//spheres can only know how to collide with other spheres
+		return C instanceof Sphere;
+	}
+	@Override
+	public void collide(Collidable C) {
+		collide(C, false);
+	}
+	@Override
+	public void collide(Collidable C, boolean ignorePosition) {
+		if(C instanceof Sphere){//never trust, always check
+			Sphere other=(Sphere)C;
+			if (ignorePosition || getCenter().distance(other.getCenter())<this.radius+other.radius){
+				bounce (other);
+				
+			}
+		}
+	}
+	
+	private void bounce(Sphere other){
+		//depth of penetration / difference in trajectories(rate they converge/diverge)
+		double time=(this.radius+other.radius-getCenter().distance(other.getCenter()))/this.getTrajectory().distance(other.getTrajectory());		
+		if(time>3600)return;//if you need to backup more than an hour, I have some bad news for you
 
+		//move time to just before collision
+		this.advance(-time);
+		other.advance(-time);
+		
+		Vector normal=this.getCenter().subtract(other.getCenter());
+		Movable.centerOfMassBounce(this, other, normal);
+		
+		//move time to its previous location
+		this.advance(time);
+		other.advance(time);
 		
 	}
+	
+	
+	
+	
+	@Override
+	public int getCollisionPrecedence() {
+		return 1;
+	}
+	public void bounceOffPoint(Vector p2) {
+		double time=(this.radius-getCenter().distance(p2))/this.getTrajectory().distance(new Vector(0,0));		
+		if(time>3600)return;//if you need to backup more than an hour, I have some bad news for you
+
+		//move time to just before collision
+		this.advance(-time);
+		
+		Vector normal=this.getCenter().subtract(p2);
+		
+		this.reflect(normal.negate());
+		
+		//move time to its previous location
+		this.advance(time);
+		
+	}
+	
 	
 
 }
