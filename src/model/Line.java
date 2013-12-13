@@ -1,8 +1,10 @@
 package model;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import view.Renderable;
@@ -142,7 +144,8 @@ public class Line extends Collidable implements Renderable {
 		// g.setColor(new Color(255,0,255,0));
 		g.setColor(Color.RED);
 		// g.fillRect(0, 0, width, height);
-		g.setColor(Color.RED);
+		g.setColor(new Color(0x700070));
+		//g.setStroke(new BasicStroke(10));
 		// System.out.println(x1+","+y1+","+x2+","+y2);
 		g.drawLine((int) x1 - x, (int) y1 - y, (int) x2 - x, (int) y2 - y);
 		return image;

@@ -54,7 +54,7 @@ if(m instanceof Movable)((Movable)m).setCOR(COR);
 				if(im==null){
 					im=new BufferedImage(1200,900,BufferedImage.TYPE_INT_ARGB);
 					Graphics g=im.getGraphics();
-					g.setColor(Color.darkGray);
+					g.setColor(Color.BLACK);
 					g.fillRect(0, 0, 1200, 900);
 				}
 				return im;

@@ -20,21 +20,22 @@ public class Tester {
 	}
 	
 	public void lineCollisionTest(){
-		sim.addGameObject(new EmptyPolygon(new int[]{
-				100,200,501,100
+		/*sim.addGameObject(new EmptyPolygon(new int[]{
+				100,150,200,501,100
 		},new int[]{
-				100,100,405,200
+				100,150,100,405,200
 		}));
-		/**/
 		
+		/**/
+		this.addRandomCircles(200);
 		//sim.addGameObject(new Line(200,100,500,405));
 		//sim.addGameObject(new Line(500,405,100,200));
 		//sim.addGameObject(new Line(100,100,200,100));
 		//sim.addGameObject(new Sphere(20,300, new Vector(200,0),100));
 		//sim.addGameObject(new Sphere(780,300, new Vector(-200,0),100));
 		//this.addRandomCircles(200);
-		//sim.addGameObject(new Line(200,100,600,500));
-		//sim.addGameObject(new Line(200,500,600,100));
+		sim.addGameObject(new Line(200,100,600,500));
+		sim.addGameObject(new Line(200,500,600,100));
 		
 		//sim.addGameObject(new Box(100,100,100,100));
 		//sim.addGameObject(new Sphere(206.0, 108.0, new Vector(253,57).subtract(new Vector(206,108)).negate(),100));

@@ -7,6 +7,6 @@ public interface Renderable {
 	int getImageX();
 	int getImageY();
 	Image getImage();
-	public Color getColor();
-	Shape getShape();
+	//public Color getColor();
+
 }
