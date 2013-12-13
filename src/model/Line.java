@@ -17,21 +17,28 @@ import mathematics.Vector;
  */
 public class Line extends Collidable implements Renderable {
 	private double x1, y1, x2, y2;
-	private Vector normal, p1, p2;
+	protected Vector normal, p1, p2;
 	private int x, y, width, height;
 	private BufferedImage image;
-	private double length;
+	protected double length;
+	private boolean isOneWay;
 
-	public Line(Vector p1, Vector p2) {
+	public Line(Vector p1, Vector p2,boolean isOneWay){
 		this(p1.getElement(0), p1.getElement(1), p2.getElement(0), p2
-				.getElement(1));
+				.getElement(1), isOneWay);
 	}
-
-	public Line(double x1, double y1, double x2, double y2) {
+	public Line(Vector p1, Vector p2) {
+		this(p1,p2,false);
+	}
+	public Line(double x1, double y1, double x2, double y2){
+		this(x1,y1,x2,y2,false);
+	}
+	public Line(double x1, double y1, double x2, double y2, boolean isOneWay) {
 		this.x1 = x1;
 		this.x2 = x2;
 		this.y1 = y1;
 		this.y2 = y2;
+		this.isOneWay=isOneWay;
 		p1 = new Vector(x1, y1);
 		p2 = new Vector(x2, y2);
 		length = p1.distance(p2);
@@ -43,7 +50,6 @@ public class Line extends Collidable implements Renderable {
 		image = new BufferedImage(width + 1, height + 1,
 				BufferedImage.TYPE_INT_ARGB);
 		this.normal = new Vector(y1 - y2, -1 * (x1 - x2)).getUnitVector();
-
 	}
 
 	@Override
@@ -89,7 +95,7 @@ public class Line extends Collidable implements Renderable {
 					if (traj < 0) {
 						s.reflect(normal.negate());
 					} else {
-						s.reflect(normal);
+						if(!isOneWay)s.reflect(normal);
 					}
 					s.advance(time);
 				}
@@ -156,6 +162,9 @@ public class Line extends Collidable implements Renderable {
 	@Override
 	public int getImageY() {
 		return (int) this.y;
+	}
+	public boolean stillExists() {
+		return true;
 	}
 
 }

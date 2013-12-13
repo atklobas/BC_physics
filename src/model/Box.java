@@ -56,13 +56,9 @@ public class Box extends Collidable implements Renderable{
 	@Override
 	public Image getImage() {
 		Graphics2D g= image.createGraphics();
-		//g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-		//g.setColor(new Color(255,0,255,0));
 		g.setColor(Color.RED);
-		//g.fillRect(0, 0, width, height);
 		g.setColor(Color.RED);
-//		System.out.println(x1+","+y1+","+x2+","+y2);
-		g.fillRect(0, 0, width, height);
+		g.drawRect(0, 0, width, height);
 		return image;
 	}
 
@@ -123,6 +119,9 @@ public class Box extends Collidable implements Renderable{
 	public double getY() {
 		// TODO Auto-generated method stub
 		return y;
+	}
+	public boolean stillExists() {
+		return true;
 	}
 
 }

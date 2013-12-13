@@ -193,6 +193,10 @@ public class Sphere extends Movable implements Renderable{
 		this.advance(time);
 		
 	}
+	@Override
+	public boolean stillExists() {
+		return true;
+	}
 	
 	
 

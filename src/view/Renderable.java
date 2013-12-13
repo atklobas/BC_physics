@@ -7,6 +7,8 @@ public interface Renderable {
 	int getImageX();
 	int getImageY();
 	Image getImage();
-	public Color getColor();
-	Shape getShape();
+	
+	//used for vector drawings objects with a defined geometric perimeter  
+	//public Color getColor();
+	//Shape getShape();
 }

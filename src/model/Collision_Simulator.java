@@ -5,12 +5,13 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
 import mathematics.Vector;
-
 import view.Collision_View;
+import view.Renderable;
 import controller.Collision_Controller;
 
 public class Collision_Simulator {
@@ -109,9 +110,23 @@ if(m instanceof Movable)((Movable)m).setCOR(COR);
 			if(m instanceof Movable)((Movable)m).addForce(gravity.scale(((Movable)m).getMass()));
 		}
 		
+		Iterator<Collidable> itr=collidable.iterator();
+		while(itr.hasNext()){
+			Collidable current= itr.next();
+			
+			if(!current.stillExists()){
+				itr.remove();
+				if(current instanceof Renderable){
+					rendered.remove((Renderable)current);
+				}
+				
+			}
+			
+			current.advance(seconds);
+			c.add(current);
+		}
 		for(Collidable m:collidable){
-			m.advance(seconds);
-			c.add(m);
+			
 			
 		}
 		c.checkCollisions();

@@ -122,5 +122,8 @@ int temp=0;
 		g.fillPolygon(this.shape);
 		return image;
 	}
+	public boolean stillExists() {
+		return true;
+	}
 
 }
