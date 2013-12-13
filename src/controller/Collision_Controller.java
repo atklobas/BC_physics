@@ -10,9 +10,10 @@ import java.util.TimerTask;
 import javax.swing.JOptionPane;
 
 import model.Collision_Simulator;
+import model.Paddle;
 import view.Collision_View;
 
-public class Collision_Controller implements ActionListener, MouseListener, MouseMotionListener{
+public class Collision_Controller implements ActionListener, MouseListener, MouseMotionListener, KeyListener{
 	
 	private Collision_View view;
 	private Collision_Simulator model;
@@ -33,6 +34,9 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 	
 	private Queue<AWTEvent> queue=new LinkedList<AWTEvent>();
 	
+	
+	//TODO not really where it should be
+	Paddle p;
 	/**
 	 * creates a Controller which then creates a model and view
 	 * 
@@ -48,12 +52,15 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 		//create a model which can update to the view
 		model = new Collision_Simulator(width,height,view);
 		
+		p = new Paddle(width/2,height-20,150);
+		model.addGameObject(p);
 		tester=new Tester(model);
 		
 		//make events in the view update this controller
 		view.addMouseListener(this);
 		view.addMouseMotionListener(this);
 		view.addActionListener(this);
+		view.addKeyListener(this);
 		
 		
 		timer=new Timer();
@@ -106,6 +113,8 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 	 * in gameloop thread as this is not thread safe
 	 */
 	public void interpretCommands(){
+		
+		p.move(Direction);
 		AWTEvent event=null;
 		while((event=queue.poll())!=null){
 			//TODO log time and operation
@@ -237,6 +246,40 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 	@Override
 	public void mouseMoved(MouseEvent event) {
 		//System.out.println("mouse moved");
+		
+	}
+   int Direction=0;
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode()==KeyEvent.VK_LEFT){
+			Direction=-15;
+			//p.move(-20);
+		}else if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+			Direction=15;
+			//p.move(20);
+			
+		}else{
+			System.out.println(e.getKeyChar());
+		}
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if(e.getKeyCode()==KeyEvent.VK_LEFT){
+			Direction=0;
+			//p.move(-20);
+		}else if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+			Direction=0;
+			//p.move(20);
+			
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
 		
 	}
 

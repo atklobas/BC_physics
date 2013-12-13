@@ -9,6 +9,12 @@ public abstract class Collidable {
 	public abstract int getBoundingHeight();
 	public abstract double getX();
 	public abstract double getY();
+	//getpos
+	//setpos(vector)
+	//setX
+	//setY
+	//translate(vector)
+	
 	public abstract boolean canCollideWith(Collidable C);
 	public abstract boolean collide(Collidable C);
 	public abstract boolean collide(Collidable C, boolean ignorePosition);

@@ -3,6 +3,7 @@ package view;
 import java.awt.Component;
 import java.awt.MenuBar;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
@@ -138,6 +139,9 @@ public class Collision_View {
 		for(JMenuItem j:menuItems){
 			j.addActionListener(a);
 		}
+	}
+	public void addKeyListener(KeyListener controller){
+		f.addKeyListener(controller);
 	}
 
 

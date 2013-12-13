@@ -24,14 +24,19 @@ public class Tester {
 		//sim.addGameObject(new Line(800,300,00,300,true));
 		
 		/*sim.addGameObject(new EmptyPolygon(new int[]{
-				100,200,501,100
+				100, 150,200,501,100
 		},new int[]{
-				100,100,405,200
+				100,150, 100,405,200
 		}));
 		/**/
+		/*sim.addGameObject(new EmptyPolygon(new int[]{
+				100, 150,200
+		},new int[]{
+				100,150,200
+		}));*/
 		
-		//sim.addGameObject(new Line(200,100,500,405));
-		//sim.addGameObject(new Line(500,405,100,200));
+		sim.addGameObject(new Line(200,100,500,405));
+		sim.addGameObject(new Line(500,405,100,200));
 		//sim.addGameObject(new Line(100,100,200,100));
 		//sim.addGameObject(new Sphere(20,300, new Vector(200,0),100));
 		//sim.addGameObject(new Sphere(780,300, new Vector(-200,0),100));
@@ -46,12 +51,12 @@ public class Tester {
 		//sphere.advance(.2);
 		//sim.addGameObject(sphere);
 		//sim.addGameObject(new Sphere(34.0,234.0, new Vector(132.0, -83.0),84.0));
-		int width=50, height=20;
+		/*int width=50, height=20;
 		for(int i=width;i<800-width;i+=width){
 			for(int j=height;j<400;j+=height){
 				sim.addGameObject(new Brick(i,j,width,height));
 			}
-		}
+		}*/
 		
 		
 		
