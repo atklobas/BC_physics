@@ -97,6 +97,7 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 			//cant to logic because delta time is undefined(0)
 		}else{
 			//model modification methods are not thread safe, so do them in the gameloop
+			
 			interpretCommands();
 			
 			long thisTime=System.currentTimeMillis();
@@ -113,15 +114,22 @@ public class Collision_Controller implements ActionListener, MouseListener, Mous
 	 * in gameloop thread as this is not thread safe
 	 */
 	public void interpretCommands(){
-		
 		p.move(Direction);
 		AWTEvent event=null;
 		while((event=queue.poll())!=null){
 			//TODO log time and operation
 			if(event instanceof MouseEvent){
+				
+				
 				MouseEvent mouse=(MouseEvent)event;
-				tester.placeSphere(startx, starty,endx-startx,endy-starty,mouse.isShiftDown());
-				System.out.println(new mathematics.Vector(mouse.getX(),mouse.getY()));
+				if(mouse.isShiftDown()){
+					tester.placeSphere(startx, starty,endx-startx,endy-starty,mouse.isAltDown());
+					System.out.println(new mathematics.Vector(mouse.getX(),mouse.getY()));
+				}else{
+					System.out.println("selected: "+model.selectAtPoint(endx, endy));
+				}
+				
+				
 			}else if(event instanceof ActionEvent){
 				ActionEvent action=(ActionEvent)event;
 				if(action.getActionCommand()=="Reset"){

@@ -35,8 +35,8 @@ public class Tester {
 				100,150,200
 		}));*/
 		
-		sim.addGameObject(new Line(200,100,500,405));
-		sim.addGameObject(new Line(500,405,100,200));
+		//sim.addGameObject(new Line(200,100,500,405));
+		//sim.addGameObject(new Line(500,405,100,200));
 		//sim.addGameObject(new Line(100,100,200,100));
 		//sim.addGameObject(new Sphere(20,300, new Vector(200,0),100));
 		//sim.addGameObject(new Sphere(780,300, new Vector(-200,0),100));
@@ -84,7 +84,7 @@ public class Tester {
 		sim.addGameObject(s);
 	}
 	public void placeSphere(int x, int y, int xvel, int yvel,boolean isImmovable){
-		Sphere s=new Sphere(x,y,new Vector(xvel,yvel),rand.nextInt(50)+50);
+		Sphere s=new Sphere(x,y,new Vector(xvel,yvel),rand.nextInt(50)+500);
 		s.setImmovable(isImmovable);
 		sim.addGameObject(s);
 	}

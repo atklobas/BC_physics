@@ -22,6 +22,7 @@ public class Collision_Simulator {
 	ArrayList<view.Renderable> rendered;
 	ArrayList<Collidable> collidable;
 	Random rand=new Random();
+	CollisionList collisionList;
 	double COR=1;
 	
 	public Collision_Simulator(int width, int height, Collision_View view) {
@@ -35,11 +36,25 @@ public class Collision_Simulator {
 	}
 	
 	public void addGameObject(Collidable m){
-if(m instanceof Movable)((Movable)m).setCOR(COR);
+		if(m instanceof Movable)((Movable)m).setCOR(COR);
 		this.collidable.add(m);
 		if(m instanceof view.Renderable){
 			this.rendered.add((view.Renderable)m);
 		}
+		
+	}
+	public void removeGameObject(Collidable m){
+		this.collidable.remove(m);
+		if(m instanceof view.Renderable){
+			this.rendered.remove((view.Renderable)m);
+		}
+		
+	}
+	public Collidable selectAtPoint(int x, int y){
+		return this.collisionList.selectAtPoint(x,y);
+	}
+	public ArrayList<Collidable> selectInRect(int x, int y, int width, int height){
+		return this.collisionList.selectInRect(x,y,width,height);
 		
 	}
 	
@@ -103,7 +118,7 @@ if(m instanceof Movable)((Movable)m).setCOR(COR);
 	}
 	public void advance(double seconds){
 		/**/
-		CollisionList c=new CollisionList(width,height,10);
+		collisionList=new CollisionList(width,height,10);
 		
 		for(Collidable m:collidable){
 			
@@ -123,13 +138,13 @@ if(m instanceof Movable)((Movable)m).setCOR(COR);
 			}
 			
 			current.advance(seconds);
-			c.add(current);
+			collisionList.add(current);
 		}
 		for(Collidable m:collidable){
 			
 			
 		}
-		c.checkCollisions();
+		collisionList.checkCollisions();
 		wallCollision();
 		//wallCollision();
 		

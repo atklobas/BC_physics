@@ -22,8 +22,35 @@ public abstract class Collidable {
 	public abstract boolean stillExists();
 	public abstract void advance(double seconds);
 	
+	
+	public boolean checkBoundingCollision(Collidable c){
+		if(this.getX()<c.getX()){//this is on left
+			if(this.getX()+this.getBoundingWidth()<c.getX())return false;
+			if(this.getY()<c.getY()){//this is top left
+				if(this.getY()+this.getBoundingHeight()<c.getY())return false;
+			}else{//this is bottom left
+				if(c.getY()+c.getBoundingHeight()<this.getY())return false;
+			}
+		}else{//this is on right
+			if(c.getX()+c.getBoundingWidth()<this.getX())return false;
+			if(this.getY()<c.getY()){//this is top right
+				if(this.getY()+this.getBoundingHeight()<c.getY())return false;
+			}else{//this is bottom right
+				if(c.getY()+c.getBoundingHeight()<this.getY())return false;
+			}
+			
+		}
+		return true;
+	}
+	public boolean pointInBoundingBox(int x, int y){
+		return (x>=this.getX()&&y>=this.getY()&&x<=this.getX()+this.getBoundingWidth()&&y<=this.getY()+this.getBoundingHeight());
+	}
+	
+	
+	
+	
 	public String toString(){
-		return "("+((int)getX())+","+((int)getY())+")";
+		return this.getClass().getName()+" at: ("+((int)getX())+","+((int)getY())+")";
 	}
 
 }

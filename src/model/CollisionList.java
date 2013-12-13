@@ -145,20 +145,23 @@ public class CollisionList {
 			boolean canA,canB;
 			for(int i=0;i<length;i++){
 				for(int j=i+1;j<length;j++){
+					
 					a=list.get(i);
 					b=list.get(j);
 					canA=a.canCollideWith(b);
 					canB=b.canCollideWith(a);
-					if(canA&&canB){
-						if(a.getCollisionPrecedence()>=b.getCollisionPrecedence()){
+					if((canA||canB)&&a.checkBoundingCollision(b)){
+						if(canA&&canB){
+							if(a.getCollisionPrecedence()>=b.getCollisionPrecedence()){
+								a.collide(b);
+							}else{
+								b.collide(a);
+							}
+						}else if(canA){
 							a.collide(b);
-						}else{
+						}else if(canB){
 							b.collide(a);
 						}
-					}else if(canA){
-						a.collide(b);
-					}else if(canB){
-						b.collide(a);
 					}
 					
 				}
@@ -184,6 +187,33 @@ public class CollisionList {
 			}
 			return ret+"</list"+this.hashCode()+">";
 		}
+	}
+	public Collidable selectAtPoint(int x, int y) {
+		if(isBottom){
+			Collidable ret=null;
+			for(Collidable c: list){
+				if(c.pointInBoundingBox(x, y))ret=c;
+			}
+			return ret;
+		}else{
+			if(x>this.midX){
+				if(y>this.midY){
+					return subLists[CollisionList.SOUTH_EAST].selectAtPoint(x, y);
+				}else{
+					return subLists[CollisionList.EAST].selectAtPoint(x, y);
+				}
+				
+			}else{
+				if(y>this.midY){
+					return subLists[CollisionList.SOUTH].selectAtPoint(x, y);
+				}else{
+					return subLists[CollisionList.CENTER].selectAtPoint(x, y);
+				}
+			}
+		}
+	}
+	public ArrayList<Collidable> selectInRect(int x, int y, int width,int height) {
+		return new ArrayList<Collidable>();
 	}
 	
 
