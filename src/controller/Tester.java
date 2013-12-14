@@ -20,29 +20,43 @@ public class Tester {
 	}
 	
 	public void lineCollisionTest(){
+<<<<<<< HEAD
 		
 		//sim.addGameObject(new Line(800,300,00,300,true));
 		
 		/*sim.addGameObject(new EmptyPolygon(new int[]{
 				100, 150,200,501,100
+=======
+		/*sim.addGameObject(new EmptyPolygon(new int[]{
+				100,150,200,501,100
+>>>>>>> branch 'master' of https://github.com/atklobas/BC_physics.git
 		},new int[]{
+<<<<<<< HEAD
 				100,150, 100,405,200
+=======
+				100,150,100,405,200
+>>>>>>> branch 'master' of https://github.com/atklobas/BC_physics.git
 		}));
+<<<<<<< HEAD
 		/**/
 		/*sim.addGameObject(new EmptyPolygon(new int[]{
 				100, 150,200
 		},new int[]{
 				100,150,200
 		}));*/
+=======
+>>>>>>> branch 'master' of https://github.com/atklobas/BC_physics.git
 		
+		/**/
+		this.addRandomCircles(200);
 		//sim.addGameObject(new Line(200,100,500,405));
 		//sim.addGameObject(new Line(500,405,100,200));
 		//sim.addGameObject(new Line(100,100,200,100));
 		//sim.addGameObject(new Sphere(20,300, new Vector(200,0),100));
 		//sim.addGameObject(new Sphere(780,300, new Vector(-200,0),100));
 		//this.addRandomCircles(200);
-		//sim.addGameObject(new Line(200,100,600,500));
-		//sim.addGameObject(new Line(200,500,600,100));
+		sim.addGameObject(new Line(200,100,600,500));
+		sim.addGameObject(new Line(200,500,600,100));
 		
 		
 		//sim.addGameObject(new Sphere(206.0, 108.0, new Vector(253,57).subtract(new Vector(206,108)).negate(),100));
